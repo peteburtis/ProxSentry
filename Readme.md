@@ -1,6 +1,8 @@
 # ProxSentry
 ## A web-cam based pseudo-proximity-sensor experiment for OS X
 
+### [Download the latest version.](https://github.com/downloads/peteburtis/ProxSentry/ProxSentry.app.zip)
+
 ### Purpose
 
 ProxSentry uses your Mac's built-in camera and OS X's built in facial detection technology to determine when you are paying attention to your computer, and when you're not.
