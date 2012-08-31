@@ -112,6 +112,9 @@
 
 -(void)setupPreviewLayer
 {
+    /*
+     Add the camera preview display to the main window.
+     */
     AVCaptureVideoPreviewLayer *previewLayer = [self.faceDetectionController videoPreviewLayer];
     self.cameraView.layer = previewLayer;
     [self.cameraView setWantsLayer:YES];
@@ -155,22 +158,28 @@
 {
     /*
      What we have here is a workaround:
-     OS X (or at least the pre-release 10.8.2 that I'm working on) seems none too happy when it tries to sleep while the camera is active. It blacks out the screen, but keeps the backlight on and the cursor visible for 30 seonds after the sleep command is issued.  Disabling the camera after we get notified that the system will sleep doesn't help.  So, at least when we know that we're the ones issuing the sleep command, we disable the camera before we issue the command.
+     OS X (or at least the pre-release 10.8.2 that I'm working on) seems none too happy when it tries to sleep while the camera is active. It blacks out the screen, but keeps the backlight on and the cursor visible for 30 seconds after the sleep command is issued.  Disabling the camera after we get notified that the system will sleep doesn't help.  So, at least when we know that we're the ones issuing the sleep command, we disable the camera before we issue the command.
      */
     needsRestartAfterSystemSleep = self.faceDetectionController.enabled;
     self.faceDetectionController.activationDisabledForSystemSleep = YES;
 }
 
 /*
- The webcam does not seem to be available immediatly following a sleep, so we disable everything before entering a sleep, and reenable everything only after we get kIOMessageSystemHasPoweredOn, which comes 5-15 seconds after everything appears to be up and running to the user.
+ The webcam does not seem to be available immediately following a sleep, so we disable everything before entering a sleep, and reenable everything only after we get kIOMessageSystemHasPoweredOn, which comes 5-15 seconds after everything appears to be up and running to the user.
 */
 
 -(void)sleepNotification:(NSNotification *)notification
 {
+    /*
+     If the whole system goes to sleep while the display is already asleep, we no longer want to wake the camera when the display wakes up.  Rather, we go through the more through waking of the camera done when the whole system wakes up.
+     */
+    
     if ( ! self.faceDetectionController.activationDisabledForSystemSleep) {
+        
         needsRestartAfterSystemSleep = ( self.faceDetectionController.enabled || needsRestartAfterDisplaySleep );
-        needsRestartAfterDisplaySleep = NO; // Let system wakeup trump display wakeup.
+        needsRestartAfterDisplaySleep = NO;
         self.faceDetectionController.activationDisabledForSystemSleep = YES;
+        
     }
     
     [self removePreviewLayer];
@@ -189,6 +198,9 @@
 
 -(void)setupDisplayPowerCallback
 {
+    /*
+     This sets up a callback that informs us when the display is dimmed by the system, goes to sleep or wakes up. Unlike full system sleep, we're still running while just the display is asleep.
+     */
     io_object_t notification = 0;
     
     io_service_t displayWrangler = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceNameMatching("IODisplayWrangler"));
@@ -209,11 +221,11 @@
     IOObjectRelease(displayWrangler);
 }
 
--(void)displayWillSystemDim
+-(void)displayWillBeDimmedBySystem
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DimScreen"]) {
         /*
-         The lock action can simulate user action to unlock the screensaver.  Here, we piggyback on that to undo the system dim if the user enters the frame and has our dim turned on, because otherwise we can't undim.
+         If we dim the display, and then the system dims the display, the user doesn't see any change, but when we attempt to wake the display, the system dim wins and nothing happens. We can defeat this by faking user activity when we detect a face, which wakes the display and deactivates the system's dim.
          */
         self.powerHelper.attemptSystemWakeUpOnFaceDetection = YES;
     }
@@ -223,7 +235,7 @@
 -(void)displayWillSleep
 {
     /*
-     Two basic stratagies when the system sleeps the display:
+     Two basic strategies when the system sleeps the display:
      
      If we aren't set to kill the screensaver when user returns, then we just shutdown the camera; full system sleep doesn't seem to work when the camera is on, and we want to respect the users full sleep setting.
      
@@ -258,6 +270,11 @@
 
 void DisplayPowerChangeCallback(void *refcon, io_service_t service, natural_t messageType, void *messageArgument)
 {
+    /*
+     This callback gets many messages, not just the two we look for below. 
+     
+     The system actually sends kIOMessageDeviceWillPowerOff twice; first when it dims the display to warn the user that sleep is imminent, and again when it actually sleeps the display.  We figure out which one is which, and call methods on the AppDelegate appropriately.
+     */
     static BOOL displayIsDimmedBySystem = NO;
     AppDelegate *appDelegate = (__bridge AppDelegate *)refcon;
     
@@ -266,7 +283,7 @@ void DisplayPowerChangeCallback(void *refcon, io_service_t service, natural_t me
             [appDelegate displayWillSleep];
             
         } else {
-            [appDelegate displayWillSystemDim];
+            [appDelegate displayWillBeDimmedBySystem];
             displayIsDimmedBySystem = YES;
             
         }
