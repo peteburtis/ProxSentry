@@ -90,7 +90,7 @@ NSString * const SleepSuppressionDeactivationDelayKey = @"SleepSuppressionDeacti
              Create a power assertion to keep the display awake.
              */
             IOPMAssertionCreateWithName(kIOPMAssertionTypePreventUserIdleDisplaySleep,
-                                        kIOPMAssertionLevelOff,
+                                        kIOPMAssertionLevelOn,
                                         CFSTR("ProxSentry User Present"),
                                         &_powerAssertion);
         } else {
