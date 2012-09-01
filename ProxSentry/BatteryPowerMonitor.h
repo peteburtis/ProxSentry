@@ -24,6 +24,9 @@
 #import <Foundation/Foundation.h>
 #import <IOKit/ps/IOPowerSources.h>
 
+// NSUserDefault Keys
+extern NSString * const BatteryAutoDisables;
+
 @class FaceDetectionController;
 
 @interface BatteryPowerMonitor : NSObject

@@ -31,7 +31,12 @@
 #import "BatteryPowerMonitor.h"
 #import "PowerStateOverrideHelperAction.h"
 
+#import "SleepSuppressionAction.h"
+#import "ScreenDimAction.h"
 #import "ScreenLockAction.h"
+
+#import "BatteryPowerMonitor.h"
+#import "StatusMenuController.h"
 
 @implementation AppDelegate
 
@@ -41,14 +46,14 @@
     if (self) {
         [[NSUserDefaults standardUserDefaults] registerDefaults:@{
          
-         @"SuppressSleep" :             @(YES),
-         @"DimScreen" :                 @(YES),
-         @"LockScreen" :                @(NO),
-         @"LockMode" :                  @(1),
-         @"LockDuration" :              @(300),
-         @"UnlockScreen" :              @(YES),
-         @"BatteryAutoDisables" :       @(NO),
-         @"MenuItemEnabled" :           @(YES)
+         SuppressSleep :             @(YES),
+         DimScreen :                 @(YES),
+         LockScreen :                @(NO),
+         LockMode :                  @(1),
+         LockDuration :              @(300),
+         UnlockScreen :              @(YES),
+         BatteryAutoDisables :       @(NO),
+         MenuItemEnabled :           @(YES)
          
          
          }];
@@ -129,7 +134,7 @@
 
 -(BOOL)batteryConditionsAllowActivation
 {
-    return (self.batteryPowerMonitor.onBatteryPower == NO || [[NSUserDefaults standardUserDefaults] boolForKey:@"BatteryAutoDisables"] == NO);
+    return (self.batteryPowerMonitor.onBatteryPower == NO || [[NSUserDefaults standardUserDefaults] boolForKey:BatteryAutoDisables] == NO);
 }
 
 #pragma mark - Power Management Stuff
@@ -223,7 +228,7 @@
 
 -(void)displayWillBeDimmedBySystem
 {
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DimScreen"]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:DimScreen]) {
         /*
          If we dim the display, and then the system dims the display, the user doesn't see any change, but when we attempt to wake the display, the system dim wins and nothing happens. We can defeat this by faking user activity when we detect a face, which wakes the display and deactivates the system's dim.
          */
@@ -242,8 +247,8 @@
      If we are set to kill the screensaver, then we leave the camera on, sleep be damned, and attempt to wake the system when the user returns.
      */
     
-    NSUInteger lockMode = [[NSUserDefaults standardUserDefaults] integerForKey:@"LockMode"];
-    BOOL unlockScreenPref = [[NSUserDefaults standardUserDefaults] integerForKey:@"UnlockScreen"];
+    NSUInteger lockMode = [[NSUserDefaults standardUserDefaults] integerForKey:LockMode];
+    BOOL unlockScreenPref = [[NSUserDefaults standardUserDefaults] integerForKey:UnlockScreen];
     if (lockMode == 0 && unlockScreenPref) {
         self.powerHelper.attemptSystemWakeUpOnFaceDetection = YES;
         

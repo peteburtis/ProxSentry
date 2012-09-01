@@ -11,6 +11,9 @@
 #define STATUS_ITEM_LENGTH 25
 #define MENU_FLASH_INTERVAL 0.75
 
+// NSUserDefaults keys
+extern NSString * const MenuItemEnabled;
+
 @class FaceDetectionController;
 
 @interface StatusMenuController : NSObject

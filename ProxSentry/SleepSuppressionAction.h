@@ -26,6 +26,8 @@
 
 #define SLEEP_SUPPRESSION_DEACTIVATION_DELAY_DEFAULT 30.0f
 
+// NSUserDefault Keys
+extern NSString * const SuppressSleep;
 extern NSString * const SleepSuppressionDeactivationDelayKey;
 
 @interface SleepSuppressionAction : DetectionTriggeredAction

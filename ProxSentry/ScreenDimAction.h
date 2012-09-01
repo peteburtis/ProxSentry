@@ -27,6 +27,10 @@
 #define DIMMING_THRESHOLD 0.085
 #define SCREEN_DIMMING_DELAY_DEFAULT 1.15
 
+// NSUserDefault Keys
+extern NSString * const DimScreen;
+extern NSString * const ScreenDimmingDelayKey;
+
 @interface ScreenDimAction : DetectionTriggeredAction {
     BOOL armed;
 }

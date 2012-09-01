@@ -24,6 +24,11 @@
 #import "ScreenLockAction.h"
 #import "FaceDetectionController.h"
 
+NSString * const LockScreen = @"LockScreen";
+NSString * const LockMode = @"LockMode";
+NSString * const LockDuration = @"LockDuration";
+NSString * const UnlockScreen = @"UnlockScreen";
+
 NSString * const ScreenLockActionWillForceSleepNotification = @"ScreenLockActionWillForceSleepNotification";
 
 @implementation ScreenLockAction
@@ -33,14 +38,14 @@ NSString * const ScreenLockActionWillForceSleepNotification = @"ScreenLockAction
     /*
      Update the trigger delay immediatly before the timer starts.
     */
-    self.faceExitTriggerDelay = [[[NSUserDefaults standardUserDefaults] objectForKey:@"LockDuration"] doubleValue];
+    self.faceExitTriggerDelay = [[[NSUserDefaults standardUserDefaults] objectForKey:LockDuration] doubleValue];
 }
 
 -(void)faceDidExitCameraFieldOfView
 {
-    if ( ! [[NSUserDefaults standardUserDefaults] boolForKey:@"LockScreen"]) return;
+    if ( ! [[NSUserDefaults standardUserDefaults] boolForKey:LockScreen]) return;
     
-    NSInteger lockMode = [[NSUserDefaults standardUserDefaults] integerForKey:@"LockMode"];
+    NSInteger lockMode = [[NSUserDefaults standardUserDefaults] integerForKey:LockMode];
     if (lockMode == 0) {
         
         // Invoke the proper command line voodoo to start the screensaver.
@@ -63,8 +68,8 @@ NSString * const ScreenLockActionWillForceSleepNotification = @"ScreenLockAction
 
 -(void)faceDidEnterCameraFieldOfView
 {
-    NSUInteger lockMode = [[NSUserDefaults standardUserDefaults] integerForKey:@"LockMode"];
-    BOOL unlockScreenPref = [[NSUserDefaults standardUserDefaults] integerForKey:@"UnlockScreen"];
+    NSUInteger lockMode = [[NSUserDefaults standardUserDefaults] integerForKey:LockMode];
+    BOOL unlockScreenPref = [[NSUserDefaults standardUserDefaults] integerForKey:UnlockScreen];
     if (lockMode == 0 && unlockScreenPref) {
         
         NSArray *screensaverEngineResults = [NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.apple.ScreenSaver.Engine"];

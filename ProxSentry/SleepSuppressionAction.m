@@ -23,6 +23,7 @@
 
 #import "SleepSuppressionAction.h"
 
+NSString * const SuppressSleep = @"SuppressSleep";
 NSString * const SleepSuppressionDeactivationDelayKey = @"SleepSuppressionDeactivationDelay";
 
 @interface SleepSuppressionAction ()
@@ -62,7 +63,7 @@ NSString * const SleepSuppressionDeactivationDelayKey = @"SleepSuppressionDeacti
 
 -(void)faceDidEnterCameraFieldOfView
 {
-    if ( ! [[NSUserDefaults standardUserDefaults] boolForKey:@"SuppressSleep"]) return;
+    if ( ! [[NSUserDefaults standardUserDefaults] boolForKey:SuppressSleep]) return;
     self.sleepSuppressed = YES;
 }
 
@@ -78,7 +79,7 @@ NSString * const SleepSuppressionDeactivationDelayKey = @"SleepSuppressionDeacti
 
 -(void)defaultsChangedNotification:(NSNotification *)notification
 {
-    self.sleepSuppressed = [[NSUserDefaults standardUserDefaults] boolForKey:@"SuppressSleep"] && self.facesPresent;
+    self.sleepSuppressed = [[NSUserDefaults standardUserDefaults] boolForKey:SuppressSleep] && self.facesPresent;
 }
 
 -(void)setSleepSuppressed:(BOOL)sleepSuppressed

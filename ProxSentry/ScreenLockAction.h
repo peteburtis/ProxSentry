@@ -25,6 +25,13 @@
 #import <IOKit/pwr_mgt/IOPMLib.h>
 #import "DetectionTriggeredAction.h"
 
+// NSUserDefaults Keys
+extern NSString * const LockScreen;
+extern NSString * const LockMode;
+extern NSString * const LockDuration;
+extern NSString * const UnlockScreen;
+
+// Notifications
 extern NSString * const ScreenLockActionWillForceSleepNotification;
 
 @class FaceDetectionController;

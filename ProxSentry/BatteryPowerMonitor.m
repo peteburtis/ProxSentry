@@ -24,6 +24,8 @@
 #import "BatteryPowerMonitor.h"
 #import "FaceDetectionController.h"
 
+NSString * const BatteryAutoDisables = @"BatteryAutoDisables";
+
 @implementation BatteryPowerMonitor
 
 -(id)init
@@ -55,7 +57,7 @@
 
 -(void)updatePowerConfiguration
 {
-    if ( ! [[NSUserDefaults standardUserDefaults] boolForKey:@"BatteryAutoDisables"]) return;
+    if ( ! [[NSUserDefaults standardUserDefaults] boolForKey:BatteryAutoDisables]) return;
     
     CFTimeInterval timeRemaining = IOPSGetTimeRemainingEstimate();
     if (timeRemaining == kIOPSTimeRemainingUnlimited)

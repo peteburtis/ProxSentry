@@ -25,6 +25,7 @@
 #import "BrightnessController.h"
 #import "FaceDetectionController.h"
 
+NSString * const DimScreen = @"DimScreen";
 NSString * const ScreenDimmingDelayKey = @"ScreenDimmingDelay";
 
 @interface ScreenDimAction ()
@@ -67,7 +68,7 @@ NSString * const ScreenDimmingDelayKey = @"ScreenDimmingDelay";
 
 -(void)defaultsChangedNotification:(NSNotification *)notification
 {
-    BOOL dimSettingIsOn = [[NSUserDefaults standardUserDefaults] boolForKey:@"DimScreen"];
+    BOOL dimSettingIsOn = [[NSUserDefaults standardUserDefaults] boolForKey:DimScreen];
     if (self.predimmedBrightness != -1 && ! dimSettingIsOn) {
         [self brightenScreen];
     } else if (self.predimmedBrightness == -1 && ! self.facesPresent && dimSettingIsOn) {
@@ -100,13 +101,13 @@ NSString * const ScreenDimmingDelayKey = @"ScreenDimmingDelay";
 -(void)faceDidEnterCameraFieldOfView
 {
     armed = YES;
-    if ( ! [[NSUserDefaults standardUserDefaults] boolForKey:@"DimScreen"]) return;
+    if ( ! [[NSUserDefaults standardUserDefaults] boolForKey:DimScreen]) return;
     [self brightenScreen];
 }
 
 -(void)faceDidExitCameraFieldOfView
 {
-    if ( ! [[NSUserDefaults standardUserDefaults] boolForKey:@"DimScreen"]) return;
+    if ( ! [[NSUserDefaults standardUserDefaults] boolForKey:DimScreen]) return;
     [self dimScreen];
 }
 

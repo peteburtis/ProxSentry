@@ -9,6 +9,8 @@
 #import "StatusMenuController.h"
 #import "FaceDetectionController.h"
 
+NSString * const MenuItemEnabled = @"MenuItemEnabled";
+
 @interface StatusMenuController ()
 @property (strong) NSStatusItem *statusItem;
 @property (strong) NSTimer *menuFlashTimer;
@@ -40,7 +42,7 @@
 
 -(void)awakeFromNib
 {
-    self.menuItemEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"MenuItemEnabled"];
+    self.menuItemEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:MenuItemEnabled];
 }
 
 -(void)setMenuItemEnabled:(BOOL)menuItemEnabled
@@ -60,7 +62,7 @@
             
         }
         
-        [[NSUserDefaults standardUserDefaults] setBool:_menuItemEnabled forKey:@"MenuItemEnabled"];
+        [[NSUserDefaults standardUserDefaults] setBool:_menuItemEnabled forKey:MenuItemEnabled];
     }
 }
 
