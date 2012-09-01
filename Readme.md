@@ -26,6 +26,9 @@ It turns out that the built-in camera works surprisingly well as a user-presence
 
 On the other hand, ProxSentry is literally five nights of work; please don't expect a lot of polish or eye candy. The core concept works, and works well, and the app is stable and useable. But the few graphics clearly have room for improvement, and the control panel is not the greatest piece of UI ever to be released.
 
+<img src="https://github.com/downloads/peteburtis/ProxSentry/ControlPanelScreenShot.png" />
+_The ProxSentry control panel, as modeled by your friendly local developer._
+
 ### Fair Warning
 
 This is a UI experiment, a toy, a proof-of-concept.  (Or a _disproof_-of-concept, perhaps.)  It's fun to play with, but as an actual tool to be used day-to-day, **it's basically useless**.
