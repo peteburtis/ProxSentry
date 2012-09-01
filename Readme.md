@@ -1,7 +1,7 @@
 # ProxSentry
 ## A webcam based pseudo-proximity-sensor experiment for OS X
 
-### [<img src="http://cloud.github.com/downloads/peteburtis/ProxSentry/LargeIcon.png" align="right" /> Get The Latest Version from the Downloads Page](https://github.com/downloads/peteburtis/ProxSentry/)
+### [<img src="http://cloud.github.com/downloads/peteburtis/ProxSentry/LargeIcon.png" align="right" /> Get The Latest Version from the Downloads Page](https://github.com/peteburtis/ProxSentry/downloads)
 
 ### Purpose
 
