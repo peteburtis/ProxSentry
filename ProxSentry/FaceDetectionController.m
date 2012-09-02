@@ -324,7 +324,9 @@ NSString * const LowerWebcamResolution = @"LowerWebcamResolution";
      Update the main thread with the results of our face search.  We use dispatch_sync, which blocks this secondary thread until the main thread updates are finished, because AVFoundation drops any frames that come in while this secondary thread is blocked; there's no use analyzing more frames while we're still waiting for the current frame to be processed.
     */
     dispatch_sync(dispatch_get_main_queue(), ^{
-        [self updateFaces:faces];
+        if (self.enabled) {
+            [self updateFaces:faces];
+        }
     });
 }
 
