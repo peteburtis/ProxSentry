@@ -1,7 +1,7 @@
 # ProxSentry
 ## A webcam based pseudo-proximity-sensor experiment for OS X
 
-### [<img src="http://cloud.github.com/downloads/peteburtis/ProxSentry/LargeIcon.png" align="right" /> Get The Latest Version from the Downloads Page](https://github.com/peteburtis/ProxSentry/downloads)
+### [<img src="https://raw.github.com/wiki/peteburtis/ProxSentry/images/LargeIcon.png" align="right" /> Get The Latest Version from the Downloads Page](https://github.com/peteburtis/ProxSentry/downloads)
 
 ### Purpose
 
@@ -26,7 +26,7 @@ It turns out that the built-in camera works surprisingly well as a user-presence
 
 On the other hand, ProxSentry is literally five nights of work; please don't expect a lot of polish or eye candy. The core concept works, and works well, and the app is stable and useable. But the few graphics clearly have room for improvement, and the control panel is not the greatest piece of UI ever to be released.
 
-<img src="https://github.com/downloads/peteburtis/ProxSentry/ControlPanelScreenShot.png" />
+<img src="https://raw.github.com/wiki/peteburtis/ProxSentry/images/ControlPanelScreenShot.png" />
 
 _The ProxSentry control panel, as modeled by your friendly local developer._
 
