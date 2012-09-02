@@ -338,7 +338,7 @@
 											<object class="NSTextFieldCell" key="NSCell" id="742981522">
 												<int key="NSCellFlags">67108864</int>
 												<int key="NSCellFlags2">272629760</int>
-												<string key="NSContents">Sleep Will Be Allowed Again 30 Seconds After User Leaves</string>
+												<string key="NSContents">Re-Allow 10 Seconds After User Leaves</string>
 												<object class="NSFont" key="NSSupport" id="24">
 													<string key="NSName">LucidaGrande</string>
 													<double key="NSSize">10</double>
@@ -424,7 +424,7 @@
 											<object class="NSTextFieldCell" key="NSCell" id="288658282">
 												<int key="NSCellFlags">67108864</int>
 												<int key="NSCellFlags2">272629760</int>
-												<string key="NSContents">Screen Brightness Adjustment is not Support by this Machine</string>
+												<string key="NSContents">Brightness Adjustment is not Support on this Mac</string>
 												<reference key="NSSupport" ref="24"/>
 												<string key="NSCellIdentifier">_NS:9</string>
 												<reference key="NSControlView" ref="781114221"/>

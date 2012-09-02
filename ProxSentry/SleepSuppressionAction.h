@@ -24,7 +24,7 @@
 #import <IOKit/pwr_mgt/IOPMLib.h>
 #import "DetectionTriggeredAction.h"
 
-#define SLEEP_SUPPRESSION_DEACTIVATION_DELAY_DEFAULT 30.0f
+#define SLEEP_SUPPRESSION_DEACTIVATION_DELAY_DEFAULT 10.0f
 
 // NSUserDefault Keys
 extern NSString * const SuppressSleep;
