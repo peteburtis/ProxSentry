@@ -424,7 +424,7 @@
 											<object class="NSTextFieldCell" key="NSCell" id="288658282">
 												<int key="NSCellFlags">67108864</int>
 												<int key="NSCellFlags2">272629760</int>
-												<string key="NSContents">Brightness Adjustment is not Support on this Mac</string>
+												<string key="NSContents">Brightness Adjustment is not Supported on this Mac</string>
 												<reference key="NSSupport" ref="24"/>
 												<string key="NSCellIdentifier">_NS:9</string>
 												<reference key="NSControlView" ref="781114221"/>
