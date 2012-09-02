@@ -75,20 +75,26 @@ NSString * const ScreenLockActionWillForceSleepNotification = @"ScreenLockAction
         NSArray *screensaverEngineResults = [NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.apple.ScreenSaver.Engine"];
         
         if (screensaverEngineResults.count > 0) {
-            [self simulateUserAction];
+            [self stopScreensaver];
         }
         
     }
     
 }
 
--(void)simulateUserAction
+-(void)stopScreensaver
 {
-    /*
-     Wake from sceen saver by simulating left arrow key. <http://apple.stackexchange.com/questions/53802/waking-display-from-terminal-general-waking> (If anyone knows of a less kludgy way to do this, pull request, please! Quitting terminating the screensaver's runningApplication doesn't quite work.)
-     */
-    [NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:@[ @"-e", @"tell application \"System Events\" to key code 123" ]];
-
+    static NSAppleScript *script = nil;
+    if (!script) {
+        script = [[NSAppleScript alloc] initWithSource:@"tell application \"System Events\" \n repeat with x in screen savers \n stop x \n end repeat \n end tell" ];
+    }
+    NSDictionary *error = nil;
+    [script executeAndReturnError:&error];
+    
+    if (error) {
+        NSLog(@"Error stopping screensaver with applescript: %@", error);
+    }
 }
+
 
 @end
