@@ -27,7 +27,7 @@
 
 /* FaceDetectionControllerWillNotifyFaceDidEntere is nessecary to wake the screen when it is sleeping before performing the rest of the face entry stuff. It probably shouldn't be used for anything else.
  */
-NSString * const FaceDetectionControllerWillNotifyFaceDidEnter = @"FaceDetectionControllerWillNotifyFaceDidEntere";
+NSString * const FaceDetectionControllerWillNotifyFaceDidEnter = @"FaceDetectionControllerWillNotifyFaceDidEnter";
 NSString * const FaceDidEnterCameraFieldOfViewNotification = @"FaceDidEnterCameraFieldOfViewNotification";
 NSString * const FaceDidExitCameraFieldOfViewNotification = @"FaceDidExitCameraFieldOfViewNotification";
 
@@ -79,14 +79,16 @@ NSString * const LowerWebcamResolution = @"LowerWebcamResolution";
         _facesPresent = newFacesPresent;
         [self didChangeValueForKey:@"facesPresent"];
         
-        NSString *notificationName = nil;
-        if (_facesPresent) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:FaceDetectionControllerWillNotifyFaceDidEnter object:self];
-            notificationName = FaceDidEnterCameraFieldOfViewNotification;
-        } else {
-            notificationName = FaceDidExitCameraFieldOfViewNotification;
+        if (self.enabled) {
+            NSString *notificationName = nil;
+            if (_facesPresent) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:FaceDetectionControllerWillNotifyFaceDidEnter object:self];
+                notificationName = FaceDidEnterCameraFieldOfViewNotification;
+            } else {
+                notificationName = FaceDidExitCameraFieldOfViewNotification;
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self];
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self];
     }
     self.outlineLayer.faces = faces;
 }
@@ -237,9 +239,9 @@ NSString * const LowerWebcamResolution = @"LowerWebcamResolution";
                 
             } else {
                 [_session stopRunning];
-                self.outlineLayer.faces = @[];
                 [[NSNotificationCenter defaultCenter] postNotificationName:FaceDetectionDidDisableNotification
                                                                     object:self];
+                [self updateFaces:@[]];
             }
             
             

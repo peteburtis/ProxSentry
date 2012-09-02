@@ -21,13 +21,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-extern NSString * const LowerWebcamResolution;
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
 #define KEY_FRAME_INTERVAL 15
 
+// NSUserDefaults keys
+extern NSString * const LowerWebcamResolution;
+
+
+// Notifications
 extern NSString * const FaceDidEnterCameraFieldOfViewNotification;
 extern NSString * const FaceDidExitCameraFieldOfViewNotification;
 
@@ -35,6 +39,7 @@ extern NSString * const FaceDetectionWillEnableNotification;
 extern NSString * const FaceDetectionDidDisableNotification;
 
 extern NSString * const FaceDetectionEnabledStateDidChangeNotification;
+
 
 @interface FaceDetectionController : NSObject <AVCaptureVideoDataOutputSampleBufferDelegate> {
     @private

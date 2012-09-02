@@ -68,6 +68,8 @@ NSString * const ScreenDimmingDelayKey = @"ScreenDimmingDelay";
 
 -(void)defaultsChangedNotification:(NSNotification *)notification
 {
+    if ( ! self.faceDetectionEnabled) return;
+    
     BOOL dimSettingIsOn = [[NSUserDefaults standardUserDefaults] boolForKey:DimScreen];
     if (self.predimmedBrightness != -1 && ! dimSettingIsOn) {
         [self brightenScreen];

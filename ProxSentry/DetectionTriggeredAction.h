@@ -32,11 +32,12 @@
 #import <Foundation/Foundation.h>
 
 @interface DetectionTriggeredAction : NSObject {
-    BOOL _facesPresent;
+    BOOL _facesPresent, _faceDetectionEnabled;
 }
 
 @property NSTimeInterval faceExitTriggerDelay;
 @property (readonly) BOOL facesPresent;
+@property (readonly) BOOL faceDetectionEnabled;
 
 // Abstract methods for subclasses to override
 

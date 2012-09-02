@@ -75,12 +75,22 @@
     [_faceExitTriggerDelayTimer invalidate];
     _faceExitTriggerDelayTimer = nil;
     
+    [self willChangeValueForKey:@"facesPresent"];
+    _facesPresent = NO;
+    [self didChangeValueForKey:@"facesPresent"];
+    [self willChangeValueForKey:@"faceDetectionEnabled"];
+    _faceDetectionEnabled = NO;
+    [self didChangeValueForKey:@"faceDetectionEnabled"];
+    
     [self faceDetectionDidDisable];
 }
 
 -(void)px_detectionWillEnableNotification:(NSNotification *)notification
 {
     [self faceDetectionWillEnable];
+    [self willChangeValueForKey:@"faceDetectionEnabled"];
+    _faceDetectionEnabled = YES;
+    [self didChangeValueForKey:@"faceDetectionEnabled"];
 }
 
 -(void)px_faceEnteredNotification:(NSNotification *)notification
@@ -143,6 +153,11 @@
 -(BOOL)facesPresent
 {
     return _facesPresent;
+}
+
+-(BOOL)faceDetectionEnabled
+{
+    return _faceDetectionEnabled;
 }
 
 #pragma mark - Abstract Functions
