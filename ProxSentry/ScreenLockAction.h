@@ -25,12 +25,17 @@
 #import <IOKit/pwr_mgt/IOPMLib.h>
 #import "DetectionTriggeredAction.h"
 
+#define PATH_TO_SCREENSAVER_APPLICATION @"/System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
+#define PATH_TO_LOCK_UTILITY @"/System/Library/CoreServices/Menu Extras/User.menu/Contents/Resources/CGSession"
+#define LOCK_UTILITY_ARGUMENS @[ @"-suspend" ]
+
 // NSUserDefaults Keys
 extern NSString * const LockScreen;
 extern NSString * const LockMode;
 extern NSString * const LockDuration;
 extern NSString * const UnlockScreen;
 extern NSString * const ExitScreensaverBySimulatingKeystroke;
+extern NSString * const AlternateScreensaverApplicationBundleIdentifier;
 
 // Notifications
 extern NSString * const ScreenLockActionWillForceSleepNotification;

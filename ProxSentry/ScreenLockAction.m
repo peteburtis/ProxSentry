@@ -29,8 +29,13 @@ NSString * const LockMode = @"LockMode";
 NSString * const LockDuration = @"LockDuration";
 NSString * const UnlockScreen = @"UnlockScreen";
 NSString * const ExitScreensaverBySimulatingKeystroke = @"ExitScreensaverBySimulatingKeystroke";
+NSString * const AlternateScreensaverApplicationBundleIdentifier = @"AlternateScreensaverApplicationBundleIdentifier";
 
 NSString * const ScreenLockActionWillForceSleepNotification = @"ScreenLockActionWillForceSleepNotification";
+
+@interface ScreenLockAction ()
+@property (nonatomic, strong) NSString *runningAlternateScreensaverBundleID;
+@end
 
 @implementation ScreenLockAction
 
@@ -49,8 +54,7 @@ NSString * const ScreenLockActionWillForceSleepNotification = @"ScreenLockAction
     NSInteger lockMode = [[NSUserDefaults standardUserDefaults] integerForKey:LockMode];
     if (lockMode == 0) {
         
-        // Invoke the proper command line voodoo to start the screensaver.
-        [NSTask launchedTaskWithLaunchPath:@"/usr/bin/open" arguments:@[ @"-a", @"/System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app" ]];
+        [self startScreensaver];
         
     } else if (lockMode == 1) {
         
@@ -61,7 +65,7 @@ NSString * const ScreenLockActionWillForceSleepNotification = @"ScreenLockAction
     } else {
         
         // Invoke the proper command line voodoo to lock the screen. (i.e. cube out to the login prompt.)
-        [NSTask launchedTaskWithLaunchPath:@"/System/Library/CoreServices/Menu Extras/User.menu/Contents/Resources/CGSession" arguments:@[ @"-suspend" ]];
+        [NSTask launchedTaskWithLaunchPath:PATH_TO_LOCK_UTILITY arguments:LOCK_UTILITY_ARGUMENS];
         
     }
 
@@ -77,6 +81,28 @@ NSString * const ScreenLockActionWillForceSleepNotification = @"ScreenLockAction
     
 }
 
+-(void)startScreensaver
+{
+    NSString *alternateScreensaverID = [[NSUserDefaults standardUserDefaults] stringForKey:AlternateScreensaverApplicationBundleIdentifier];
+    NSString *screensaverApplicationPath;
+    if (alternateScreensaverID) {
+        
+        screensaverApplicationPath = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:alternateScreensaverID];
+        if (screensaverApplicationPath == nil) {
+            NSLog(@"Cannot start alternate screensaver; could not find application with bundle identifier %@", alternateScreensaverID);
+            return;
+        }
+        self.runningAlternateScreensaverBundleID = alternateScreensaverID;
+        
+    } else {
+        
+        screensaverApplicationPath = PATH_TO_SCREENSAVER_APPLICATION;
+        
+    }
+    // Invoke the proper command line voodoo to start the screensaver.
+    [NSTask launchedTaskWithLaunchPath:@"/usr/bin/open" arguments:@[ @"-a", screensaverApplicationPath ]];
+}
+
 -(void)stopScreensaver
 {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:ExitScreensaverBySimulatingKeystroke]) {
@@ -84,6 +110,17 @@ NSString * const ScreenLockActionWillForceSleepNotification = @"ScreenLockAction
         NSArray *screensaverEngineResults = [NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.apple.ScreenSaver.Engine"];
         if (screensaverEngineResults.count > 0) {
             [NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:@[ @"-e", @"tell application \"System Events\" to key code 123" ]];
+        }
+        
+    } else if (self.runningAlternateScreensaverBundleID) {
+        
+        NSArray *results = [NSRunningApplication runningApplicationsWithBundleIdentifier:self.runningAlternateScreensaverBundleID];
+        if (results.count > 0) {
+            NSRunningApplication *alternateScreensaver = results[0];
+            [alternateScreensaver terminate];
+            self.runningAlternateScreensaverBundleID = nil;
+        } else {
+            NSLog(@"Alternate Screensaver Not Running.  Cannot terminate.");
         }
         
     } else {
