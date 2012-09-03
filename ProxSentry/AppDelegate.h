@@ -28,6 +28,9 @@
 #include <IOKit/IOKitLib.h>
 #include <IOKit/IOMessage.h>
 
+// NSUserDefaults keys
+extern NSString * const AlwaysDisableCameraOnDisplaySleep;
+
 @class FaceDetectionController;
 @class BatteryPowerMonitor;
 @class PowerStateOverrideHelperAction;

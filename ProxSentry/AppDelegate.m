@@ -38,6 +38,8 @@
 #import "BatteryPowerMonitor.h"
 #import "StatusMenuController.h"
 
+NSString * const AlwaysDisableCameraOnDisplaySleep = @"AlwaysDisableCameraOnDisplaySleep";
+
 @implementation AppDelegate
 
 -(id)init
@@ -247,16 +249,18 @@
      If we are set to kill the screensaver, then we leave the camera on, sleep be damned, and attempt to wake the system when the user returns.
      */
     
+    BOOL universalDisplaySleepPref = [[NSUserDefaults standardUserDefaults] boolForKey:AlwaysDisableCameraOnDisplaySleep];
+    
     NSUInteger lockMode = [[NSUserDefaults standardUserDefaults] integerForKey:LockMode];
     BOOL unlockScreenPref = [[NSUserDefaults standardUserDefaults] integerForKey:UnlockScreen];
-    if (lockMode == 0 && unlockScreenPref) {
-        self.powerHelper.attemptSystemWakeUpOnFaceDetection = YES;
+    if ( universalDisplaySleepPref || lockMode != 0 || ! unlockScreenPref ) {
+        
+        needsRestartAfterDisplaySleep = self.faceDetectionController.enabled;
+        self.faceDetectionController.enabled = NO;
         
     } else {
-        if (self.faceDetectionController.enabled) {
-            self.faceDetectionController.enabled = NO;
-            needsRestartAfterDisplaySleep = YES;
-        }
+        
+        self.powerHelper.attemptSystemWakeUpOnFaceDetection = YES;
         
     }
     NSLog(@"System Did Sleep Screen");
