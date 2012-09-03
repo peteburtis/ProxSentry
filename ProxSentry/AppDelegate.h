@@ -28,6 +28,8 @@
 #include <IOKit/IOKitLib.h>
 #include <IOKit/IOMessage.h>
 
+#define HUD_WINDOW_FINAL_SIZE NSMakeSize( 280, 210 )
+
 // NSUserDefaults keys
 extern NSString * const AlwaysDisableCameraOnDisplaySleep;
 
@@ -35,17 +37,19 @@ extern NSString * const AlwaysDisableCameraOnDisplaySleep;
 @class BatteryPowerMonitor;
 @class PowerStateOverrideHelperAction;
 
-@interface AppDelegate : NSObject <NSApplicationDelegate> {
+@interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate> {
     @private
     BOOL needsRestartAfterSystemSleep, needsRestartAfterDisplaySleep;
 }
 
 @property (nonatomic, assign) IBOutlet NSWindow *window;
+@property (nonatomic, assign) IBOutlet NSPanel *HUDWindow;
 @property (nonatomic, assign) IBOutlet NSView *cameraView;
 @property (nonatomic, assign) IBOutlet FaceDetectionController *faceDetectionController;
 @property (nonatomic, assign) IBOutlet BatteryPowerMonitor *batteryPowerMonitor;
 @property (nonatomic, assign) IBOutlet PowerStateOverrideHelperAction *powerHelper;
 
 -(IBAction)showAboutPanel:(id)sender;
+-(IBAction)showMainWindow:(id)sender;
 
 @end

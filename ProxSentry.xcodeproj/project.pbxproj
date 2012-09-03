@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		D0060C8D15EEF5700031419F /* License.txt in Copy License to Bundle Contents Root */ = {isa = PBXBuildFile; fileRef = D0F0EBC615EEF0D100FB2E3C /* License.txt */; };
 		D0208DDA15EDDB13007718B5 /* LoginItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0208DD915EDDB13007718B5 /* LoginItemController.m */; };
+		D022BC0C15F56CE9007E2468 /* DoubleClickView.m in Sources */ = {isa = PBXBuildFile; fileRef = D022BC0B15F56CE9007E2468 /* DoubleClickView.m */; };
+		D022BC1015F56FE8007E2468 /* AppDelegate+WindowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = D022BC0F15F56FE8007E2468 /* AppDelegate+WindowControl.m */; };
 		D02982E815EF4B94002CA061 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = D02982E715EF4B94002CA061 /* Icon.icns */; };
 		D04FED6215F44E6200F37E9B /* MenuIconDisabledAlt.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D04FED5F15F44E6200F37E9B /* MenuIconDisabledAlt.pdf */; };
 		D04FED6315F44E6200F37E9B /* MenuIconOffAlt.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D04FED6015F44E6200F37E9B /* MenuIconOffAlt.pdf */; };
@@ -55,6 +57,10 @@
 /* Begin PBXFileReference section */
 		D0208DD815EDDB13007718B5 /* LoginItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginItemController.h; sourceTree = "<group>"; };
 		D0208DD915EDDB13007718B5 /* LoginItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginItemController.m; sourceTree = "<group>"; };
+		D022BC0A15F56CE9007E2468 /* DoubleClickView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoubleClickView.h; sourceTree = "<group>"; };
+		D022BC0B15F56CE9007E2468 /* DoubleClickView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DoubleClickView.m; sourceTree = "<group>"; };
+		D022BC0E15F56FE8007E2468 /* AppDelegate+WindowControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+WindowControl.h"; sourceTree = "<group>"; };
+		D022BC0F15F56FE8007E2468 /* AppDelegate+WindowControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "AppDelegate+WindowControl.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D02982E715EF4B94002CA061 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Icon.icns; path = Images/Icon.icns; sourceTree = SOURCE_ROOT; };
 		D04FED5F15F44E6200F37E9B /* MenuIconDisabledAlt.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = MenuIconDisabledAlt.pdf; path = Images/MenuIconDisabledAlt.pdf; sourceTree = SOURCE_ROOT; };
 		D04FED6015F44E6200F37E9B /* MenuIconOffAlt.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = MenuIconOffAlt.pdf; path = Images/MenuIconOffAlt.pdf; sourceTree = SOURCE_ROOT; };
@@ -180,6 +186,10 @@
 				D0DD84DD15EB4D480013BE1A /* MainMenu.xib */,
 				D0DD84DA15EB4D480013BE1A /* AppDelegate.h */,
 				D0DD84DB15EB4D480013BE1A /* AppDelegate.m */,
+				D022BC0E15F56FE8007E2468 /* AppDelegate+WindowControl.h */,
+				D022BC0F15F56FE8007E2468 /* AppDelegate+WindowControl.m */,
+				D022BC0A15F56CE9007E2468 /* DoubleClickView.h */,
+				D022BC0B15F56CE9007E2468 /* DoubleClickView.m */,
 				D0DD84E915EB4E560013BE1A /* FaceDetectionController.h */,
 				D0DD84EA15EB4E560013BE1A /* FaceDetectionController.m */,
 				D0FFE5D615EF5F92001394F3 /* FaceOutlineDrawingLayer.h */,
@@ -322,6 +332,8 @@
 				D0208DDA15EDDB13007718B5 /* LoginItemController.m in Sources */,
 				D0FFE5D815EF5F92001394F3 /* FaceOutlineDrawingLayer.m in Sources */,
 				D0E28A6515F09D5700587F74 /* PowerStateOverrideHelperAction.m in Sources */,
+				D022BC0C15F56CE9007E2468 /* DoubleClickView.m in Sources */,
+				D022BC1015F56FE8007E2468 /* AppDelegate+WindowControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

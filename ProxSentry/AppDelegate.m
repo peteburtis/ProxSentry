@@ -27,6 +27,7 @@
  */
 
 #import "AppDelegate.h"
+#import "AppDelegate+WindowControl.h"
 #import "FaceDetectionController.h"
 #import "BatteryPowerMonitor.h"
 #import "PowerStateOverrideHelperAction.h"
@@ -37,6 +38,17 @@
 
 #import "BatteryPowerMonitor.h"
 #import "StatusMenuController.h"
+
+@interface AppDelegate ()
+@property (nonatomic) NSRect fullCameraViewFrame;
+@end
+
+@interface AppDelegate (WindowControl_PrivateMethods)
+// Private methods that we call from AppDelegate+WindowControl
+-(void)flipWindows;
+-(void)switchToHUDWindow;
+-(void)switchToMainWindow;
+@end
 
 NSString * const AlwaysDisableCameraOnDisplaySleep = @"AlwaysDisableCameraOnDisplaySleep";
 
@@ -78,6 +90,8 @@ NSString * const AlwaysDisableCameraOnDisplaySleep = @"AlwaysDisableCameraOnDisp
     
     // Setup and show the window
     [self.window setLevel:NSStatusWindowLevel];
+    [self.HUDWindow setLevel:NSStatusWindowLevel];
+    [self.HUDWindow setContentAspectRatio:NSMakeSize(4,3)];
     if ( ! [NSApp isHidden]) {
         [self showMainWindow:self];
     }
@@ -92,7 +106,7 @@ NSString * const AlwaysDisableCameraOnDisplaySleep = @"AlwaysDisableCameraOnDisp
     return NO;
 }
 
-#pragma mark - IBActions
+#pragma mark - User Actions
 
 -(IBAction)showAboutPanel:(id)sender
 {
@@ -111,11 +125,22 @@ NSString * const AlwaysDisableCameraOnDisplaySleep = @"AlwaysDisableCameraOnDisp
     /*
      Seem to have to explicitly activate the app when dealing with a UIElement application.
     */
-    [NSApp activateIgnoringOtherApps:YES];
-    [self.window makeKeyAndOrderFront:self];
+    if ([self.HUDWindow isVisible]) {
+        [self switchToMainWindow];
+    } else {
+        [NSApp activateIgnoringOtherApps:YES];
+        [self.window makeKeyAndOrderFront:self];
+    }
 }
 
 #pragma mark - Private Methods
+
+-(CALayer *)blackedOutLayer
+{
+    CALayer *standInLayer = [CALayer layer];
+    standInLayer.backgroundColor = [[NSColor blackColor] CGColor];
+    return standInLayer;
+}
 
 -(void)setupPreviewLayer
 {
@@ -129,9 +154,7 @@ NSString * const AlwaysDisableCameraOnDisplaySleep = @"AlwaysDisableCameraOnDisp
 
 -(void)removePreviewLayer
 {
-    CALayer *standInLayer = [CALayer layer];
-    standInLayer.backgroundColor = [[NSColor blackColor] CGColor];
-    self.cameraView.layer = standInLayer;
+    self.cameraView.layer = [self blackedOutLayer];
 }
 
 -(BOOL)batteryConditionsAllowActivation
