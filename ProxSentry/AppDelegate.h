@@ -32,6 +32,7 @@
 
 // NSUserDefaults keys
 extern NSString * const AlwaysDisableCameraOnDisplaySleep;
+extern NSString * const HUDWindowOpacity;
 
 @class FaceDetectionController;
 @class BatteryPowerMonitor;

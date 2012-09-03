@@ -51,6 +51,7 @@
 @end
 
 NSString * const AlwaysDisableCameraOnDisplaySleep = @"AlwaysDisableCameraOnDisplaySleep";
+NSString * const HUDWindowOpacity = @"HUDWindowOpacity";
 
 @implementation AppDelegate
 
@@ -67,7 +68,8 @@ NSString * const AlwaysDisableCameraOnDisplaySleep = @"AlwaysDisableCameraOnDisp
          LockDuration :              @(300),
          UnlockScreen :              @(YES),
          BatteryAutoDisables :       @(NO),
-         MenuItemEnabled :           @(YES)
+         MenuItemEnabled :           @(YES),
+         HUDWindowOpacity :          @(1.0f)
          
          
          }];
@@ -83,15 +85,16 @@ NSString * const AlwaysDisableCameraOnDisplaySleep = @"AlwaysDisableCameraOnDisp
     [self registerForSleepNotifications];
     [self setupDisplayPowerCallback];
     
-    // Activate the camera and face detection if appropriate
     if ([self batteryConditionsAllowActivation]) {
         self.faceDetectionController.enabled = YES;
     }
     
-    // Setup and show the window
+    float HUDWindowOpacityPreference = [[NSUserDefaults standardUserDefaults] floatForKey:HUDWindowOpacity];
     [self.window setLevel:NSStatusWindowLevel];
     [self.HUDWindow setLevel:NSStatusWindowLevel];
     [self.HUDWindow setContentAspectRatio:NSMakeSize(4,3)];
+    [self.HUDWindow setOpaque:(HUDWindowOpacityPreference == 1)];
+    [self.HUDWindow setAlphaValue:HUDWindowOpacityPreference];
     if ( ! [NSApp isHidden]) {
         [self showMainWindow:self];
     }
