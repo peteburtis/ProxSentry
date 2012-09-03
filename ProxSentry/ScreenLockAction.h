@@ -30,6 +30,7 @@ extern NSString * const LockScreen;
 extern NSString * const LockMode;
 extern NSString * const LockDuration;
 extern NSString * const UnlockScreen;
+extern NSString * const ExitScreensaverBySimulatingKeystroke;
 
 // Notifications
 extern NSString * const ScreenLockActionWillForceSleepNotification;

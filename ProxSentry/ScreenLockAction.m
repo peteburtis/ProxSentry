@@ -28,6 +28,7 @@ NSString * const LockScreen = @"LockScreen";
 NSString * const LockMode = @"LockMode";
 NSString * const LockDuration = @"LockDuration";
 NSString * const UnlockScreen = @"UnlockScreen";
+NSString * const ExitScreensaverBySimulatingKeystroke = @"ExitScreensaverBySimulatingKeystroke";
 
 NSString * const ScreenLockActionWillForceSleepNotification = @"ScreenLockActionWillForceSleepNotification";
 
@@ -71,24 +72,35 @@ NSString * const ScreenLockActionWillForceSleepNotification = @"ScreenLockAction
     NSUInteger lockMode = [[NSUserDefaults standardUserDefaults] integerForKey:LockMode];
     BOOL unlockScreenPref = [[NSUserDefaults standardUserDefaults] integerForKey:UnlockScreen];
     if (lockMode == 0 && unlockScreenPref) {
-        
-        NSArray *screensaverEngineResults = [NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.apple.ScreenSaver.Engine"];
-        
-        if (screensaverEngineResults.count > 0) {
-            [self simulateUserAction];
-        }
-        
+        [self stopScreensaver];
     }
     
 }
 
--(void)simulateUserAction
+-(void)stopScreensaver
 {
-    /*
-     Wake from sceen saver by simulating left arrow key. <http://apple.stackexchange.com/questions/53802/waking-display-from-terminal-general-waking> (If anyone knows of a less kludgy way to do this, pull request, please! Quitting terminating the screensaver's runningApplication doesn't quite work.)
-     */
-    [NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:@[ @"-e", @"tell application \"System Events\" to key code 123" ]];
-
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:ExitScreensaverBySimulatingKeystroke]) {
+        
+        NSArray *screensaverEngineResults = [NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.apple.ScreenSaver.Engine"];
+        if (screensaverEngineResults.count > 0) {
+            [NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:@[ @"-e", @"tell application \"System Events\" to key code 123" ]];
+        }
+        
+    } else {
+        
+        static NSAppleScript *script = nil;
+        if (!script) {
+            script = [[NSAppleScript alloc] initWithSource:@"tell application \"System Events\" \n repeat with x in screen savers \n stop x \n end repeat \n end tell" ];
+        }
+        NSDictionary *error = nil;
+        [script executeAndReturnError:&error];
+        
+        if (error) {
+            NSLog(@"Error stopping screensaver with applescript: %@", error);
+        }
+        
+    }
 }
+
 
 @end
