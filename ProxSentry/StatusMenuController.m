@@ -89,13 +89,17 @@ NSString * const MenuItemEnabled = @"MenuItemEnabled";
 {
     static BOOL flashState = NO;
     NSImage *image;
+    NSImage *altImage;
     if (flashState) {
         image = [self offImage];
+        altImage = [self offImageAlt];
     } else {
         image = [self disabledImage];
+        altImage = [self disabledImageAlt];
     }
     flashState = ! flashState;
     [self.statusItem setImage:image];
+    [self.statusItem setAlternateImage:altImage];
 }
 
 -(void)updateMenuItemIcon
@@ -106,14 +110,19 @@ NSString * const MenuItemEnabled = @"MenuItemEnabled";
         [self stopFlashingMenu];
         
         NSImage *image;
+        NSImage *altImage;
         if (self.faceDetectionController.facesPresent && self.faceDetectionController.enabled) {
             image = [self onImage];
+            altImage = [self onImageAlt];
         } else if (self.faceDetectionController.enabled) {
             image = [self offImage];
+            altImage = [self offImageAlt];
         } else {
             image = [self disabledImage];
+            altImage = [self disabledImageAlt];
         }
         [self.statusItem setImage:image];
+        [self.statusItem setAlternateImage:altImage];
     }
 }
 
@@ -128,15 +137,27 @@ NSString * const MenuItemEnabled = @"MenuItemEnabled";
 {
     return [NSImage imageNamed:@"MenuIconOn"];
 }
+-(NSImage *)onImageAlt
+{
+    return [NSImage imageNamed:@"MenuIconOnAlt"];
+}
 
 -(NSImage *)offImage
 {
     return [NSImage imageNamed:@"MenuIconOff"];
 }
+-(NSImage *)offImageAlt
+{
+    return [NSImage imageNamed:@"MenuIconOffAlt"];
+}
 
 -(NSImage *)disabledImage
 {
     return [NSImage imageNamed:@"MenuIconDisabled"];
+}
+-(NSImage *)disabledImageAlt
+{
+    return [NSImage imageNamed:@"MenuIconDisabledAlt"];
 }
 
 @end

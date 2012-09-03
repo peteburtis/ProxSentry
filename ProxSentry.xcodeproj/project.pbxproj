@@ -10,6 +10,9 @@
 		D0060C8D15EEF5700031419F /* License.txt in Copy License to Bundle Contents Root */ = {isa = PBXBuildFile; fileRef = D0F0EBC615EEF0D100FB2E3C /* License.txt */; };
 		D0208DDA15EDDB13007718B5 /* LoginItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0208DD915EDDB13007718B5 /* LoginItemController.m */; };
 		D02982E815EF4B94002CA061 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = D02982E715EF4B94002CA061 /* Icon.icns */; };
+		D04FED6215F44E6200F37E9B /* MenuIconDisabledAlt.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D04FED5F15F44E6200F37E9B /* MenuIconDisabledAlt.pdf */; };
+		D04FED6315F44E6200F37E9B /* MenuIconOffAlt.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D04FED6015F44E6200F37E9B /* MenuIconOffAlt.pdf */; };
+		D04FED6415F44E6200F37E9B /* MenuIconOnAlt.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D04FED6115F44E6200F37E9B /* MenuIconOnAlt.pdf */; };
 		D067E04915EC70E0007355A1 /* BatteryPowerMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = D067E04815EC70DF007355A1 /* BatteryPowerMonitor.m */; };
 		D067E04D15EC7FC8007355A1 /* MenuIconDisabled.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D067E04A15EC7FC8007355A1 /* MenuIconDisabled.pdf */; };
 		D067E04E15EC7FC8007355A1 /* MenuIconOff.pdf in Resources */ = {isa = PBXBuildFile; fileRef = D067E04B15EC7FC8007355A1 /* MenuIconOff.pdf */; };
@@ -53,6 +56,9 @@
 		D0208DD815EDDB13007718B5 /* LoginItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginItemController.h; sourceTree = "<group>"; };
 		D0208DD915EDDB13007718B5 /* LoginItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginItemController.m; sourceTree = "<group>"; };
 		D02982E715EF4B94002CA061 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Icon.icns; path = Images/Icon.icns; sourceTree = SOURCE_ROOT; };
+		D04FED5F15F44E6200F37E9B /* MenuIconDisabledAlt.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = MenuIconDisabledAlt.pdf; path = Images/MenuIconDisabledAlt.pdf; sourceTree = SOURCE_ROOT; };
+		D04FED6015F44E6200F37E9B /* MenuIconOffAlt.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = MenuIconOffAlt.pdf; path = Images/MenuIconOffAlt.pdf; sourceTree = SOURCE_ROOT; };
+		D04FED6115F44E6200F37E9B /* MenuIconOnAlt.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = MenuIconOnAlt.pdf; path = Images/MenuIconOnAlt.pdf; sourceTree = SOURCE_ROOT; };
 		D067E04715EC70DF007355A1 /* BatteryPowerMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = BatteryPowerMonitor.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		D067E04815EC70DF007355A1 /* BatteryPowerMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BatteryPowerMonitor.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D067E04A15EC7FC8007355A1 /* MenuIconDisabled.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = MenuIconDisabled.pdf; path = Images/MenuIconDisabled.pdf; sourceTree = SOURCE_ROOT; };
@@ -193,6 +199,9 @@
 				D067E04A15EC7FC8007355A1 /* MenuIconDisabled.pdf */,
 				D067E04B15EC7FC8007355A1 /* MenuIconOff.pdf */,
 				D067E04C15EC7FC8007355A1 /* MenuIconOn.pdf */,
+				D04FED5F15F44E6200F37E9B /* MenuIconDisabledAlt.pdf */,
+				D04FED6015F44E6200F37E9B /* MenuIconOffAlt.pdf */,
+				D04FED6115F44E6200F37E9B /* MenuIconOnAlt.pdf */,
 				D0DD84D015EB4D480013BE1A /* ProxSentry-Info.plist */,
 				D0DD84D115EB4D480013BE1A /* InfoPlist.strings */,
 				D0DD84D415EB4D480013BE1A /* main.m */,
@@ -287,6 +296,9 @@
 				D067E04E15EC7FC8007355A1 /* MenuIconOff.pdf in Resources */,
 				D067E04F15EC7FC8007355A1 /* MenuIconOn.pdf in Resources */,
 				D02982E815EF4B94002CA061 /* Icon.icns in Resources */,
+				D04FED6215F44E6200F37E9B /* MenuIconDisabledAlt.pdf in Resources */,
+				D04FED6315F44E6200F37E9B /* MenuIconOffAlt.pdf in Resources */,
+				D04FED6415F44E6200F37E9B /* MenuIconOnAlt.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
