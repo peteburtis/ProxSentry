@@ -3,7 +3,7 @@
 //  Razorgirl
 //
 /*
- https://https://github.com/peteburtis/ProxSentry
+ https://github.com/peteburtis/ProxSentry
  
  Copyright (C) 2012 Peter Burtis
  
