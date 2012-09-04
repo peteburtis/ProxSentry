@@ -56,7 +56,7 @@ The easiest way to get ProxSentry is to visit the [downloads](https://github.com
 
 ### Documentation
 
-I'm slowly filling in the [The ProxSentry wiki](https://github.com/peteburtis/ProxSentry/wiki) with interesting things.
+I'm slowly filling in [the ProxSentry wiki](https://github.com/peteburtis/ProxSentry/wiki) with interesting things.
 
 ### Compatibility
 
@@ -66,13 +66,13 @@ However, I don't actively test it on 10.7.  If an incompatibility sneaks in, ple
 
 ### Building From Source
 
-Building from source is encouraged; the versions in of ProxSentry in the Downloads section are often at least a features behind the master branch or the source code.
+Building from source is encouraged; the versions of ProxSentry in the Downloads section are often at least a few features behind the master branch of the source code.
 
-[Download](https://github.com/peteburtis/ProxSentry/zipball/master) or clone the source from github, open `ProxSentry.xcodeproj` in **Xcode 4.4** or later.  Click `Run`.  [Thats is all](http://twitter.com/hodgman).
+[Download](https://github.com/peteburtis/ProxSentry/zipball/master) or clone the source from github, open `ProxSentry.xcodeproj` in **Xcode 4.4** or later.  Click `Run`.  [That is all](http://twitter.com/hodgman).
 
 ### [Pull Requests](https://github.com/peteburtis/ProxSentry/pulls), [Bug Reports, and Feature Requests](https://github.com/peteburtis/ProxSentry/issues)...
 
-...are all welcome. For bug reports and feature requests, visit the [issues](https://github.com/peteburtis/ProxSentry/issues) page.
+...are all welcome. As are [wiki](https://github.com/peteburtis/ProxSentry/wiki) contributions. For bug reports and feature requests, visit the [issues](https://github.com/peteburtis/ProxSentry/issues) page.
 
 ### License
 
