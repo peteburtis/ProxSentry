@@ -91,14 +91,16 @@ NSString * const HUDWindowDisableTitleBar = @"HUDWindowDisableTitleBar";
     }
     
     float HUDWindowOpacityPreference = [[NSUserDefaults standardUserDefaults] floatForKey:HUDWindowOpacity];
-    [self.window setLevel:NSStatusWindowLevel];
-    [self.HUDWindow setLevel:NSStatusWindowLevel];
-    [self.HUDWindow setContentAspectRatio:NSMakeSize(4,3)];
     [self.HUDWindow setOpaque:(HUDWindowOpacityPreference == 1)];
     [self.HUDWindow setAlphaValue:HUDWindowOpacityPreference];
+    [self.HUDWindow setLevel:NSStatusWindowLevel];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:HUDWindowDisableTitleBar]) {
         self.HUDWindow.styleMask = self.HUDWindow.styleMask ^ NSTitledWindowMask;
     }
+    [self.HUDWindow setContentAspectRatio:NSMakeSize(4,3)];
+    
+    [self.window setLevel:NSStatusWindowLevel];
+    
     if ( ! [NSApp isHidden]) {
         [self showMainWindow:self];
     }
