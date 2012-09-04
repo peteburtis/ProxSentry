@@ -52,6 +52,7 @@
 
 NSString * const AlwaysDisableCameraOnDisplaySleep = @"AlwaysDisableCameraOnDisplaySleep";
 NSString * const HUDWindowOpacity = @"HUDWindowOpacity";
+NSString * const HUDWindowDisableTitleBar = @"HUDWindowDisableTitleBar";
 
 @implementation AppDelegate
 
@@ -95,6 +96,9 @@ NSString * const HUDWindowOpacity = @"HUDWindowOpacity";
     [self.HUDWindow setContentAspectRatio:NSMakeSize(4,3)];
     [self.HUDWindow setOpaque:(HUDWindowOpacityPreference == 1)];
     [self.HUDWindow setAlphaValue:HUDWindowOpacityPreference];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:HUDWindowDisableTitleBar]) {
+        self.HUDWindow.styleMask = self.HUDWindow.styleMask ^ NSTitledWindowMask;
+    }
     if ( ! [NSApp isHidden]) {
         [self showMainWindow:self];
     }
