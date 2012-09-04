@@ -41,7 +41,6 @@ extern NSString * const FaceDetectionControllerWillNotifyFaceDidEnter;
 -(void)preFaceEntryNotification:(NSNotification *)notification
 {
     if (_attemptSystemWakeUpOnFaceDetection) {
-        NSLog(@"Attempting to wake system");
         IOPMAssertionID assertionID;
         IOPMAssertionDeclareUserActivity(CFSTR("ProxSentry Wake Up Screen Upon Face Detection"),
                                          kIOPMUserActiveLocal,

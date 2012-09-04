@@ -268,7 +268,6 @@ NSString * const HUDWindowDisableTitleBar = @"HUDWindowDisableTitleBar";
          */
         self.powerHelper.attemptSystemWakeUpOnFaceDetection = YES;
     }
-    NSLog(@"System Did Dim Screen");
 }
 
 -(void)displayWillSleep
@@ -295,7 +294,6 @@ NSString * const HUDWindowDisableTitleBar = @"HUDWindowDisableTitleBar";
         self.powerHelper.attemptSystemWakeUpOnFaceDetection = YES;
         
     }
-    NSLog(@"System Did Sleep Screen");
 }
 
 -(void)displayDidWake
@@ -306,7 +304,6 @@ NSString * const HUDWindowDisableTitleBar = @"HUDWindowDisableTitleBar";
     }
     
     self.powerHelper.attemptSystemWakeUpOnFaceDetection = NO;
-    NSLog(@"System Did Wake Screen");
 }
 
 void DisplayPowerChangeCallback(void *refcon, io_service_t service, natural_t messageType, void *messageArgument)

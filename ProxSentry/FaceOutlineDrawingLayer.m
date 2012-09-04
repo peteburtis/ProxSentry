@@ -54,8 +54,6 @@
     CGFloat scaley = bounds.size.height / _sourceFrameSize.height;
     
     scaleFactor = (scalex > scaley ? scalex : scaley);
-    
-    NSLog(@"New scale factor: %f bounds: %f x %f sourceFrame: ( %f x %f )", scaleFactor, bounds.size.width, bounds.size.height, _sourceFrameSize.width, _sourceFrameSize.height);
 }
 
 -(void)setSourceFrameSize:(CGSize)sourceFrameSize
