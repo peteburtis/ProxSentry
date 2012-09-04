@@ -829,7 +829,7 @@
 				<string key="NSScreenRect">{{0, 0}, {1366, 768}}</string>
 				<string key="NSMinSize">{801, 335}</string>
 				<string key="NSMaxSize">{801, 335}</string>
-				<string key="NSFrameAutosaveName"/>
+				<string key="NSFrameAutosaveName">Proxperiment</string>
 				<int key="NSWindowCollectionBehavior">5</int>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
