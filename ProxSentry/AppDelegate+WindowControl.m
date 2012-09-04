@@ -62,7 +62,6 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
 
 -(void)switchToHUDWindow
 {
-    NSSize finalSize = HUD_WINDOW_FINAL_SIZE;
     self.fullCameraViewFrame = [self.window convertRectToScreen:self.cameraView.frame];
     NSRect startingHUDWindowFrame = self.fullCameraViewFrame;
     
@@ -81,9 +80,10 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
     if (self.returnHUDWindowToLastSize) {
         newHUDWindowFrame = NSRectFromString([[NSUserDefaults standardUserDefaults] objectForKey:HUDWindowLastPosition]);
     } else {
+        NSSize finalSize = HUD_WINDOW_FINAL_SIZE;
         newHUDWindowFrame.origin = self.window.frame.origin;
         newHUDWindowFrame.size = finalSize;
-        // Center the HUD window
+        // Center the HUD window under the old
         newHUDWindowFrame.origin.x += startingHUDWindowFrame.size.width / 2 - finalSize.width / 2;
         newHUDWindowFrame.origin.y += startingHUDWindowFrame.size.height / 2 - finalSize.height / 2;
     }
@@ -146,10 +146,15 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
 
 -(void)saveHUDPreferences
 {
-    NSString *frameString = NSStringFromRect(self.HUDWindow.frame);
+    /*
+     Save the height just the content, not the whole window, because resize method is designed to take it that way.
+     */
+    NSRect rectToSave = self.HUDWindow.frame;
+    rectToSave.size = [self.HUDWindow.contentView frame].size; // Save the height of the whole window
     BOOL HUDIsVisible = [self.HUDWindow isVisible];
     if (HUDIsVisible)
-        [[NSUserDefaults standardUserDefaults] setValue:frameString forKey:HUDWindowLastPosition];
+        [[NSUserDefaults standardUserDefaults] setValue:NSStringFromRect(rectToSave) forKey:HUDWindowLastPosition];
+    
     [[NSUserDefaults standardUserDefaults] setBool:HUDIsVisible forKey:HUDWindowVisible];
 }
 
