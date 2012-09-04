@@ -62,6 +62,7 @@
 NSString * const AlwaysDisableCameraOnDisplaySleep = @"AlwaysDisableCameraOnDisplaySleep";
 NSString * const HUDWindowOpacity = @"HUDWindowOpacity";
 NSString * const HUDWindowDisableTitleBar = @"HUDWindowDisableTitleBar";
+NSString * const StartupHidden = @"StartupHidden";
 
 @implementation AppDelegate
 
@@ -109,14 +110,16 @@ NSString * const HUDWindowDisableTitleBar = @"HUDWindowDisableTitleBar";
     
     [self.window setLevel:NSStatusWindowLevel];
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:HUDWindowVisible]) {
-        [self restoreHUD];
-        [NSApp unhideWithoutActivation];
-        /*
-         unhideWithoutActivation: if we're setup to run at launch, we set ourselves up to launch hidden.  That't not what the user will want if we have a HUD to restore.
-         */
-    } else if ( ! [NSApp isHidden]) {
-        [self showMainWindow:self];
+    if ( ! [[NSUserDefaults standardUserDefaults] boolForKey:StartupHidden]) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:HUDWindowVisible]) {
+            [self restoreHUD];
+            [NSApp unhideWithoutActivation];
+            /*
+             unhideWithoutActivation: if we're setup to run at launch, we set ourselves up to launch hidden.  That't not what the user will want if we have a HUD to restore.
+             */
+        } else if ( ! [NSApp isHidden]) {
+            [self showMainWindow:self];
+        }
     }
 }
 

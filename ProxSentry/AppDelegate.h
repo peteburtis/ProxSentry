@@ -34,6 +34,7 @@
 extern NSString * const AlwaysDisableCameraOnDisplaySleep;
 extern NSString * const HUDWindowOpacity;
 extern NSString * const HUDWindowDisableTitleBar;
+extern NSString * const StartupHidden;
 
 @class FaceDetectionController;
 @class BatteryPowerMonitor;
