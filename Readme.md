@@ -1,7 +1,7 @@
 # ProxSentry
 ## A webcam based pseudo-proximity-sensor experiment for OS X
 
-### [<img src="https://raw.github.com/wiki/peteburtis/ProxSentry/images/LargeIcon.png" align="right" /> Get The Latest Version from the Downloads Page](https://github.com/peteburtis/ProxSentry/downloads)
+### [<img src="https://raw.github.com/wiki/peteburtis/ProxSentry/images/LargeIcon.png" align="right" /> Get The Latest Version from Top of the Downloads Page](https://github.com/peteburtis/ProxSentry/downloads)
 
 ### Purpose
 
@@ -50,7 +50,31 @@ My destitute blog is [The Future is Shiny](http://thefutureisshiny.com/). Who kn
 
 I am [@peteburtis](http://twitter.com/peteburtis) on twitter.  I would love your feedback.
 
+## Technical Details
+
+The easiest way to get ProxSentry is to visit the [downloads](https://github.com/peteburtis/ProxSentry/downloads) page, download the newest version of the app (usually the top link), and then drag it from your Downloads folder to your Applications folder.
+
+### Documentation
+
+I'm slowly filling in the [The ProxSentry wiki](https://github.com/peteburtis/ProxSentry/wiki) with interesting things.
+
+### Compatibility
+
+ProxSentry is designed to be compatible with OS X version **10.7.X** and **10.8.X**.
+
+However, I don't actively test it on 10.7.  If an incompatibility sneaks in, please [submit an issue](https://github.com/peteburtis/ProxSentry/issues).
+
+### Building From Source
+
+Building from source is encouraged; the versions in of ProxSentry in the Downloads section are often at least a features behind the master branch or the source code.
+
+[Download](https://github.com/peteburtis/ProxSentry/zipball/master) or clone the source from github, open `ProxSentry.xcodeproj` in **Xcode 4.4** or later.  Click `Run`.  [Thats is all](http://twitter.com/hodgman).
+
+### [Pull Requests](https://github.com/peteburtis/ProxSentry/pulls), [Bug Reports, and Feature Requests](https://github.com/peteburtis/ProxSentry/issues)...
+
+...are all welcome. For bug reports and feature requests, visit the [issues](https://github.com/peteburtis/ProxSentry/issues) page.
+
 ### License
 
-ProxSentry is licensed under the GPLv3.  See License.txt for more.
+ProxSentry is licensed under the [GPLv3](http://www.gnu.org/licenses/quick-guide-gplv3.html).  See [License.txt](https://raw.github.com/peteburtis/ProxSentry/master/License.txt) for more.
 
