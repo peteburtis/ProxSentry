@@ -7,6 +7,12 @@
 //
 
 #import "AppDelegate+WindowControl.h"
+#import "FaceDetectionController.h"
+
+NSString * const HUDWindowLastPosition = @"HUDWindowLastPosition";
+NSString * const HUDWindowVisible = @"HUDWindowVisible";
+
+
 
 @interface AppDelegate ()
 // Private methods from AppDelegate prime that we need to call
@@ -14,7 +20,11 @@
 -(void)removePreviewLayer;
 -(CALayer *)blackedOutLayer;
 @property (nonatomic) NSRect fullCameraViewFrame;
+@property (nonatomic) BOOL returnHUDWindowToLastSize;
+@property BOOL movingWindows;
 @end
+
+
 
 @implementation AppDelegate (WindowControl)
 
@@ -57,9 +67,8 @@
     NSRect startingHUDWindowFrame = self.fullCameraViewFrame;
     
     
-    CALayer *videoLayer = self.cameraView.layer;
     [self removePreviewLayer];
-    [self.HUDWindow.contentView setLayer:videoLayer];
+    [self.HUDWindow.contentView setLayer:self.faceDetectionController.videoPreviewLayer];
     [self.HUDWindow.contentView setWantsLayer:YES];
     
     [self.HUDWindow setFrame:startingHUDWindowFrame display:NO];
@@ -69,18 +78,26 @@
     [self.window orderOut:self];
     
     NSRect newHUDWindowFrame;
-    newHUDWindowFrame.origin = self.window.frame.origin;
-    newHUDWindowFrame.size = finalSize;
-    // Center the HUD window
-    newHUDWindowFrame.origin.x += startingHUDWindowFrame.size.width / 2 - finalSize.width / 2;
-    newHUDWindowFrame.origin.y += startingHUDWindowFrame.size.height / 2 - finalSize.height / 2;
+    if (self.returnHUDWindowToLastSize) {
+        newHUDWindowFrame = NSRectFromString([[NSUserDefaults standardUserDefaults] objectForKey:HUDWindowLastPosition]);
+    } else {
+        newHUDWindowFrame.origin = self.window.frame.origin;
+        newHUDWindowFrame.size = finalSize;
+        // Center the HUD window
+        newHUDWindowFrame.origin.x += startingHUDWindowFrame.size.width / 2 - finalSize.width / 2;
+        newHUDWindowFrame.origin.y += startingHUDWindowFrame.size.height / 2 - finalSize.height / 2;
+    }
     
-    [self animateHUDWindowZoomToContentFrame:newHUDWindowFrame completionHandler:NULL];
+    [self animateHUDWindowZoomToContentFrame:newHUDWindowFrame completionHandler:^{
+        [self saveHUDPreferences];
+    }];
 }
 
 -(void)switchToMainWindow
 {
-    // This *almost* works; needs to account for the dock...
+    
+    self.movingWindows = YES;
+    self.returnHUDWindowToLastSize = YES;
     
     NSRect currentHUDWindowFrame = self.HUDWindow.frame;
     NSRect newHUDWindowFrame = self.fullCameraViewFrame; // fullCameraViewFrame for size; origin is off for now
@@ -112,11 +129,43 @@
     [self.window setFrame:newMainWindowFrame display:NO animate:NO];
     [self animateHUDWindowZoomToContentFrame:newHUDWindowFrame completionHandler:^{
         [self.window orderBack:self];
-        [self setupPreviewLayer];
         
         [self.HUDWindow.contentView setLayer:[self blackedOutLayer]];
         [self.HUDWindow orderOut:self];
+        
+        [self setupPreviewLayer];
+        
+        [self saveHUDPreferences];
+        self.movingWindows = NO;
+        
+        [self.window.contentView setNeedsDisplay:YES];
     }];
+}
+
+#pragma mark - Preferences Stuff
+
+-(void)saveHUDPreferences
+{
+    NSString *frameString = NSStringFromRect(self.HUDWindow.frame);
+    BOOL HUDIsVisible = [self.HUDWindow isVisible];
+    if (HUDIsVisible)
+        [[NSUserDefaults standardUserDefaults] setValue:frameString forKey:HUDWindowLastPosition];
+    [[NSUserDefaults standardUserDefaults] setBool:HUDIsVisible forKey:HUDWindowVisible];
+}
+
+-(void)restoreHUD
+{
+    /*
+     Only to be called durinig app startup; do the absolute minimum to get the HUD on screen, and have switchToMainWindow work when called
+     */
+    self.fullCameraViewFrame = self.cameraView.frame;
+
+    [self.HUDWindow.contentView setLayer:[self.faceDetectionController videoPreviewLayer]];
+    [self.HUDWindow.contentView setWantsLayer:YES];
+    [self.HUDWindow setFrame:NSRectFromString([[NSUserDefaults standardUserDefaults] objectForKey:HUDWindowLastPosition])
+                     display:NO];
+    
+    [self.HUDWindow makeKeyAndOrderFront:self];
 }
 
 #pragma mark - Window Delegate Stuff
@@ -125,6 +174,25 @@
 {
     [self flipWindows];
     return NO;
+}
+
+-(void)windowWillClose:(NSNotification *)notification
+{
+    self.returnHUDWindowToLastSize = NO;
+    if (notification.object == self.HUDWindow) {
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:HUDWindowVisible];
+    }
+}
+
+-(void)windowDidMove:(NSNotification *)notification
+{
+    if (self.movingWindows) return;
+    
+    if (notification.object == self.window) {
+        self.returnHUDWindowToLastSize = NO;
+    } else {
+        [self saveHUDPreferences];
+    }
 }
 
 @end

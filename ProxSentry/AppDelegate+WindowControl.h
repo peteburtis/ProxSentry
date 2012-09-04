@@ -8,5 +8,8 @@
 
 #import "AppDelegate.h"
 
+extern NSString * const HUDWindowLastPosition;
+extern NSString * const HUDWindowVisible;
+
 @interface AppDelegate (WindowControl)
 @end

@@ -39,16 +39,25 @@
 #import "BatteryPowerMonitor.h"
 #import "StatusMenuController.h"
 
+
+
 @interface AppDelegate ()
 @property (nonatomic) NSRect fullCameraViewFrame;
+@property (nonatomic) BOOL returnHUDWindowToLastSize;
+@property BOOL movingWindows;
 @end
+
+
 
 @interface AppDelegate (WindowControl_PrivateMethods)
 // Private methods that we call from AppDelegate+WindowControl
 -(void)flipWindows;
 -(void)switchToHUDWindow;
 -(void)switchToMainWindow;
+-(void)restoreHUD;
 @end
+
+
 
 NSString * const AlwaysDisableCameraOnDisplaySleep = @"AlwaysDisableCameraOnDisplaySleep";
 NSString * const HUDWindowOpacity = @"HUDWindowOpacity";
@@ -82,7 +91,6 @@ NSString * const HUDWindowDisableTitleBar = @"HUDWindowDisableTitleBar";
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    [self setupPreviewLayer];
     [self registerForSleepNotifications];
     [self setupDisplayPowerCallback];
     
@@ -101,7 +109,13 @@ NSString * const HUDWindowDisableTitleBar = @"HUDWindowDisableTitleBar";
     
     [self.window setLevel:NSStatusWindowLevel];
     
-    if ( ! [NSApp isHidden]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:HUDWindowVisible]) {
+        [self restoreHUD];
+        [NSApp unhideWithoutActivation];
+        /*
+         unhideWithoutActivation: if we're setup to run at launch, we set ourselves up to launch hidden.  That't not what the user will want if we have a HUD to restore.
+         */
+    } else if ( ! [NSApp isHidden]) {
         [self showMainWindow:self];
     }
 }
@@ -137,6 +151,7 @@ NSString * const HUDWindowDisableTitleBar = @"HUDWindowDisableTitleBar";
     if ([self.HUDWindow isVisible]) {
         [self switchToMainWindow];
     } else {
+        [self setupPreviewLayer];
         [NSApp activateIgnoringOtherApps:YES];
         [self.window makeKeyAndOrderFront:self];
     }
@@ -156,9 +171,8 @@ NSString * const HUDWindowDisableTitleBar = @"HUDWindowDisableTitleBar";
     /*
      Add the camera preview display to the main window.
      */
-    AVCaptureVideoPreviewLayer *previewLayer = [self.faceDetectionController videoPreviewLayer];
-    self.cameraView.layer = previewLayer;
-    [self.cameraView setWantsLayer:YES];
+    self.cameraView.layer = self.faceDetectionController.videoPreviewLayer;
+    self.cameraView.wantsLayer = YES;
 }
 
 -(void)removePreviewLayer
