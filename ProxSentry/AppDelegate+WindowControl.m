@@ -165,10 +165,12 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
      */
     self.fullCameraViewFrame = self.cameraView.frame;
 
+    NSRect HUDFrame = NSRectFromString([[NSUserDefaults standardUserDefaults] objectForKey:HUDWindowLastPosition]);
+    
     [self.HUDWindow.contentView setLayer:[self.faceDetectionController videoPreviewLayer]];
     [self.HUDWindow.contentView setWantsLayer:YES];
-    [self.HUDWindow setFrame:NSRectFromString([[NSUserDefaults standardUserDefaults] objectForKey:HUDWindowLastPosition])
-                     display:NO];
+    [self.HUDWindow setFrame:HUDFrame display:NO];
+    [self.HUDWindow setContentSize:HUDFrame.size]; // HUDFrame is actuall the size of the content.
     
     [self.HUDWindow makeKeyAndOrderFront:self];
 }
