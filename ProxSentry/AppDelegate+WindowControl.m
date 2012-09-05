@@ -11,7 +11,7 @@
 
 NSString * const HUDWindowLastPosition = @"HUDWindowLastPosition";
 NSString * const HUDWindowVisible = @"HUDWindowVisible";
-
+NSString * const KeepVideoPreviewOnHotStandby = @"KeepVideoPreviewOnHotStandby";
 
 
 @interface AppDelegate ()
@@ -68,6 +68,30 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
         HUDStandInLayer = [CALayer layer];
     }
     [self.HUDWindow.contentView setLayer:HUDStandInLayer];
+}
+
+-(void)destroyPreviewLayer
+{
+    [self removePreviewLayerFromHUDWindow];
+    [self removePreviewLayerFromMainWindow];
+    
+    if ( ! [[NSUserDefaults standardUserDefaults] boolForKey:KeepVideoPreviewOnHotStandby]) {
+        [self.faceDetectionController uncachePreviewLayer];
+    }
+}
+
+-(void)prepareForSleep
+{
+    [self destroyPreviewLayer];
+}
+
+-(void)wakeFromSleep
+{
+    if ([self.window isVisible]) {
+        [self addPreviewLayerToMainWindow];
+    } else if ([self.HUDWindow isVisible]) {
+        [self addPreviewlayerToHUDWindow];
+    }
 }
 
 #pragma mark - Window Control
@@ -238,6 +262,7 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
     if (notification.object == self.HUDWindow) {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:HUDWindowVisible];
     }
+    [self destroyPreviewLayer];
 }
 
 -(void)windowDidMove:(NSNotification *)notification

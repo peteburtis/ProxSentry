@@ -39,15 +39,15 @@ NSString * const FaceDetectionEnabledStateDidChangeNotification = @"FaceDetectio
 NSString * const LowerWebcamResolution = @"LowerWebcamResolution";
 
 @interface FaceDetectionController ()
-@property (strong) AVCaptureDevice *webcamDevice;
-@property (strong) AVCaptureDeviceInput *webcamDeviceInput;
 @property (strong) AVCaptureSession *session;
-@property (strong) AVCaptureVideoDataOutput *dataOutput;
+@property (weak) AVCaptureDevice *webcamDevice;
+@property (weak) AVCaptureVideoDataOutput *dataOutput;
+
 @property (strong) CIDetector *faceDetector;
 
+@property (strong) CALayer *previewSuperlayer;
 @property (weak) AVCaptureVideoPreviewLayer *videoLayer;
 @property (weak) FaceOutlineDrawingLayer *outlineLayer;
-@property (strong) CALayer *previewSuperlayer;
 @end
 
 @implementation FaceDetectionController
@@ -99,26 +99,26 @@ NSString * const LowerWebcamResolution = @"LowerWebcamResolution";
 
     NSError *error = nil;
     
-    _webcamDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    if (! _webcamDevice) {
+    AVCaptureDevice *webcamDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    if ( ! webcamDevice) {
         // TODO UI ERROR
         NSLog(@"No Default Video Device.");
         return;
     }
     
-    [_webcamDevice addObserver:self
+    [webcamDevice addObserver:self
                     forKeyPath:@"activeFormat"
                        options:0
                        context:NULL];
     
     BOOL hasLock = NO;
-    if ( ! [_webcamDevice isInUseByAnotherApplication] && [[NSUserDefaults standardUserDefaults] boolForKey:LowerWebcamResolution]) {
+    if ( ! [webcamDevice isInUseByAnotherApplication] && [[NSUserDefaults standardUserDefaults] boolForKey:LowerWebcamResolution]) {
         NSError *error = nil;
-        [_webcamDevice lockForConfiguration:&error];
+        [webcamDevice lockForConfiguration:&error];
         if ( ! error) {
             hasLock = NO;
             
-            NSArray *formats = [_webcamDevice formats];
+            NSArray *formats = [webcamDevice formats];
             NSLog(@"Webcam supports formats:\n%@", formats);
             
             for (AVCaptureDeviceFormat *format in formats) {
@@ -126,7 +126,7 @@ NSString * const LowerWebcamResolution = @"LowerWebcamResolution";
                 CGSize resolution = CMVideoFormatDescriptionGetPresentationDimensions(formatDescription, true, true);
                 
                 if (resolution.width >= 320 && resolution.height >= 240) {
-                    _webcamDevice.activeFormat = format;
+                    webcamDevice.activeFormat = format;
                     NSLog(@"Selecting Resolution: %@", NSStringFromSize(NSSizeFromCGSize(resolution)) );
                     break;
                 }
@@ -137,21 +137,25 @@ NSString * const LowerWebcamResolution = @"LowerWebcamResolution";
         }
     }
     
-    _webcamDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:_webcamDevice error:&error];
-    if (!_webcamDeviceInput) {
+    AVCaptureDeviceInput *webcamDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:webcamDevice error:&error];
+    if (!webcamDeviceInput) {
         // TODO UI ERROR
         NSLog(@"Error accessing device input: %@", error);
         return;
     }
     
     _session = [AVCaptureSession new];
-    [_session addInput:_webcamDeviceInput];
+    [_session addInput:webcamDeviceInput];
     
     
-    _dataOutput = [AVCaptureVideoDataOutput new];
-    _dataOutput.videoSettings = nil; // Setting to nil ensures uncompressed frames are given to us
-    [_dataOutput setSampleBufferDelegate:self queue:dispatch_get_global_queue(0, 0)];
-    [_session addOutput:_dataOutput];
+    AVCaptureVideoDataOutput *dataOutput = [AVCaptureVideoDataOutput new];
+    dataOutput.videoSettings = nil; // Setting to nil ensures uncompressed frames are given to us
+    [dataOutput setSampleBufferDelegate:self queue:dispatch_get_global_queue(0, 0)];
+    [_session addOutput:dataOutput];
+    
+    // Set weak referenced properties now that session is holding them
+    _webcamDevice = webcamDevice;
+    _dataOutput = dataOutput;
     
     if (hasLock) {
         [self buildVideoPreviewLayer];  // Build the video preivew layer while we still have the device locked.
@@ -162,11 +166,12 @@ NSString * const LowerWebcamResolution = @"LowerWebcamResolution";
 -(void)destroyCaptureSession
 {
     [_webcamDevice removeObserver:self forKeyPath:@"activeFormat"];
-    
-    _webcamDevice = nil;
-    _webcamDeviceInput = nil;
     _session = nil;
-    _dataOutput = nil;
+    
+    /*
+     All other class properties related to the session are weak references, the only thing anchoring them is the _session.  Nil that out and they all go away.
+     (Except for the webcam, which is a singleton kept around by the system.)
+     */
 }
 
 -(void)buildVideoPreviewLayer
@@ -175,16 +180,14 @@ NSString * const LowerWebcamResolution = @"LowerWebcamResolution";
     if (_previewSuperlayer != nil) return;
     
     // Create and configure the video preview layer
-    AVCaptureVideoPreviewLayer *newPreviewLayer = [AVCaptureVideoPreviewLayer layerWithSessionWithNoConnection:_session];
+    AVCaptureVideoPreviewLayer *newPreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:_session];
     newPreviewLayer.backgroundColor = [[NSColor blackColor] CGColor];
+    newPreviewLayer.opaque = YES;
     
-    // Connect the video preview layer to our capture session
-    //        [newPreviewLayer setSessionWithNoConnection:_session];
-    AVCaptureConnection *connection = [AVCaptureConnection connectionWithInputPort:_webcamDeviceInput.ports[0]
-                                                                 videoPreviewLayer:newPreviewLayer];
+    // Mirror the video
+    AVCaptureConnection *connection = newPreviewLayer.connection;
     connection.automaticallyAdjustsVideoMirroring = NO;
     connection.videoMirrored = YES;
-    [_session addConnection:connection];
     
     // Build a layer to hold the video preview layer and the face outline drawing layer on top of it
     _previewSuperlayer = [CALayer layer];
@@ -210,9 +213,12 @@ NSString * const LowerWebcamResolution = @"LowerWebcamResolution";
 
 -(void)destroyVideoPreviewLayer
 {
+    [_session removeConnection:_videoLayer.connection];
     _previewSuperlayer = nil;
-    _videoLayer = nil;
-    _outlineLayer = nil;
+    
+    /*
+     All other class properties related to the video preview layer are weak references, the only thing anchoring them is the _previewSuperlayer.  Nil that out and they all go away.
+     */
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -264,6 +270,11 @@ NSString * const LowerWebcamResolution = @"LowerWebcamResolution";
         _activationDisabledForSystemSleep = activationDisabledForSystemSleep;
         [self shutdownVideoCapture];
     }
+}
+
+-(void)uncachePreviewLayer
+{
+    [self destroyVideoPreviewLayer];
 }
 
 -(CALayer *)videoPreviewLayer

@@ -51,6 +51,8 @@
 
 @interface AppDelegate (WindowControl_PrivateMethods)
 // Private methods that we call from AppDelegate+WindowControl
+-(void)prepareForSleep;
+-(void)wakeFromSleep;
 -(void)flipWindows;
 -(void)showHUDWindow;
 -(void)showMainWindow;
@@ -202,6 +204,7 @@ NSString * const StartupHidden = @"StartupHidden";
     /*
      If the whole system goes to sleep while the display is already asleep, we no longer want to wake the camera when the display wakes up.  Rather, we go through the more through waking of the camera done when the whole system wakes up.
      */
+    [self prepareForSleep];
     
     if ( ! self.faceDetectionController.activationDisabledForSystemSleep) {
         
@@ -218,6 +221,8 @@ NSString * const StartupHidden = @"StartupHidden";
     if (needsRestartAfterSystemSleep && [self batteryConditionsAllowActivation]) {
         self.faceDetectionController.enabled = YES;
     }
+    
+    [self wakeFromSleep];
 }
 
 #pragma mark Display Sleep

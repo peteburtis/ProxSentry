@@ -51,6 +51,7 @@ extern NSString * const FaceDetectionEnabledStateDidChangeNotification;
 @property (nonatomic, readonly) BOOL facesPresent;
 
 -(AVCaptureVideoPreviewLayer *)videoPreviewLayer;
+-(void)uncachePreviewLayer;
 -(void)shutdownVideoCapture;
 
 @end

@@ -10,6 +10,7 @@
 
 extern NSString * const HUDWindowLastPosition;
 extern NSString * const HUDWindowVisible;
+extern NSString * const KeepVideoPreviewOnHotStandby;
 
 @interface AppDelegate (WindowControl)
 @end
