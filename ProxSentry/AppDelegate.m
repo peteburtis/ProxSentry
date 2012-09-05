@@ -52,8 +52,8 @@
 @interface AppDelegate (WindowControl_PrivateMethods)
 // Private methods that we call from AppDelegate+WindowControl
 -(void)flipWindows;
--(void)switchToHUDWindow;
--(void)switchToMainWindow;
+-(void)showHUDWindow;
+-(void)showMainWindow;
 -(void)restoreHUD;
 @end
 
@@ -151,37 +151,10 @@ NSString * const StartupHidden = @"StartupHidden";
     /*
      Seem to have to explicitly activate the app when dealing with a UIElement application.
     */
-    if ([self.HUDWindow isVisible]) {
-        [self switchToMainWindow];
-    } else {
-        [self setupPreviewLayer];
-        [NSApp activateIgnoringOtherApps:YES];
-        [self.window makeKeyAndOrderFront:self];
-    }
+    [self showMainWindow];
 }
 
 #pragma mark - Private Methods
-
--(CALayer *)blackedOutLayer
-{
-    CALayer *standInLayer = [CALayer layer];
-    standInLayer.backgroundColor = [[NSColor blackColor] CGColor];
-    return standInLayer;
-}
-
--(void)setupPreviewLayer
-{
-    /*
-     Add the camera preview display to the main window.
-     */
-    self.cameraView.layer = self.faceDetectionController.videoPreviewLayer;
-    self.cameraView.wantsLayer = YES;
-}
-
--(void)removePreviewLayer
-{
-    self.cameraView.layer = [self blackedOutLayer];
-}
 
 -(BOOL)batteryConditionsAllowActivation
 {
@@ -237,8 +210,6 @@ NSString * const StartupHidden = @"StartupHidden";
         self.faceDetectionController.activationDisabledForSystemSleep = YES;
         
     }
-    
-    [self removePreviewLayer];
 }
 
 -(void)wakeNotification:(NSNotification *)notification
@@ -247,7 +218,6 @@ NSString * const StartupHidden = @"StartupHidden";
     if (needsRestartAfterSystemSleep && [self batteryConditionsAllowActivation]) {
         self.faceDetectionController.enabled = YES;
     }
-    [self setupPreviewLayer];
 }
 
 #pragma mark Display Sleep

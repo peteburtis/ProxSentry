@@ -16,9 +16,6 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
 
 @interface AppDelegate ()
 // Private methods from AppDelegate prime that we need to call
--(void)setupPreviewLayer;
--(void)removePreviewLayer;
--(CALayer *)blackedOutLayer;
 @property (nonatomic) NSRect fullCameraViewFrame;
 @property (nonatomic) BOOL returnHUDWindowToLastSize;
 @property BOOL movingWindows;
@@ -34,6 +31,43 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
 -(void)doubleClickViewDidDoubleClick:(NSView *)view
 {
     [self flipWindows];
+}
+
+#pragma mark - Window Setup and Taredown
+
+-(void)addPreviewLayerToMainWindow
+{
+    /*
+     Add the camera preview display to the main window.
+     */
+    [self.cameraView setLayer:[self.faceDetectionController videoPreviewLayer]];
+    [self.cameraView setWantsLayer:YES];
+}
+
+-(void)removePreviewLayerFromMainWindow
+{
+    static CALayer *mainStandInLayer = nil;
+    if ( ! mainStandInLayer) {
+        mainStandInLayer = [CALayer layer];
+        mainStandInLayer.backgroundColor = [[NSColor blackColor] CGColor];
+        mainStandInLayer.opaque = YES;
+    }
+    [self.cameraView setLayer:mainStandInLayer];
+}
+
+-(void)addPreviewlayerToHUDWindow
+{
+    [self.HUDWindow.contentView setLayer:[self.faceDetectionController videoPreviewLayer]];
+    [self.HUDWindow.contentView setWantsLayer:YES];
+}
+
+-(void)removePreviewLayerFromHUDWindow
+{
+    static CALayer *HUDStandInLayer = nil;
+    if ( ! HUDStandInLayer) {
+        HUDStandInLayer = [CALayer layer];
+    }
+    [self.HUDWindow.contentView setLayer:HUDStandInLayer];
 }
 
 #pragma mark - Window Control
@@ -54,21 +88,41 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
 -(void)flipWindows
 {
     if ([self.window isVisible]) {
-        [self switchToHUDWindow];
+        [self showHUDWindow];
     } else {
-        [self switchToMainWindow];
+        [self showMainWindow];
     }
 }
 
--(void)switchToHUDWindow
+-(void)showHUDWindow
+{
+    if ([self.window isVisible]) {
+        [self animateSwitchingToHUD];
+    } else {
+        [self addPreviewlayerToHUDWindow];
+        [self.HUDWindow makeKeyAndOrderFront:self];
+    }
+}
+
+-(void)showMainWindow
+{
+    if ([self.HUDWindow isVisible]) {
+        [self animateSwitchingToMainWindow];
+    } else {
+        [NSApp activateIgnoringOtherApps:YES];
+        [self addPreviewLayerToMainWindow];
+        [self.window makeKeyAndOrderFront:self];
+    }
+}
+
+-(void)animateSwitchingToHUD
 {
     self.fullCameraViewFrame = [self.window convertRectToScreen:self.cameraView.frame];
     NSRect startingHUDWindowFrame = self.fullCameraViewFrame;
     
     
-    [self removePreviewLayer];
-    [self.HUDWindow.contentView setLayer:self.faceDetectionController.videoPreviewLayer];
-    [self.HUDWindow.contentView setWantsLayer:YES];
+    [self removePreviewLayerFromMainWindow];
+    [self addPreviewlayerToHUDWindow];
     
     [self.HUDWindow setFrame:startingHUDWindowFrame display:NO];
     [self.HUDWindow setContentSize:startingHUDWindowFrame.size];
@@ -93,9 +147,8 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
     }];
 }
 
--(void)switchToMainWindow
+-(void)animateSwitchingToMainWindow
 {
-    
     self.movingWindows = YES;
     self.returnHUDWindowToLastSize = YES;
     
@@ -130,10 +183,10 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
     [self animateHUDWindowZoomToContentFrame:newHUDWindowFrame completionHandler:^{
         [self.window orderBack:self];
         
-        [self.HUDWindow.contentView setLayer:[self blackedOutLayer]];
         [self.HUDWindow orderOut:self];
         
-        [self setupPreviewLayer];
+        [self removePreviewLayerFromHUDWindow];
+        [self addPreviewLayerToMainWindow];
         
         [self saveHUDPreferences];
         self.movingWindows = NO;
@@ -161,18 +214,14 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
 -(void)restoreHUD
 {
     /*
-     Only to be called durinig app startup; do the absolute minimum to get the HUD on screen, and have switchToMainWindow work when called
+     Only to be called durinig app startup; get the HUD on screen, and setup self.fullCameraViewFrame so that switchToMainWindow will work when called
      */
     self.fullCameraViewFrame = self.cameraView.frame;
 
     NSRect HUDFrame = NSRectFromString([[NSUserDefaults standardUserDefaults] objectForKey:HUDWindowLastPosition]);
-    
-    [self.HUDWindow.contentView setLayer:[self.faceDetectionController videoPreviewLayer]];
-    [self.HUDWindow.contentView setWantsLayer:YES];
     [self.HUDWindow setFrame:HUDFrame display:NO];
     [self.HUDWindow setContentSize:HUDFrame.size]; // HUDFrame is actuall the size of the content.
-    
-    [self.HUDWindow makeKeyAndOrderFront:self];
+    [self showHUDWindow];
 }
 
 #pragma mark - Window Delegate Stuff
