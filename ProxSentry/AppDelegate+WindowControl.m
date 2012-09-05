@@ -35,25 +35,39 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
 
 #pragma mark - Window Setup and Taredown
 
--(CALayer *)blackedOutLayer
-{
-    CALayer *standInLayer = [CALayer layer];
-    standInLayer.backgroundColor = [[NSColor blackColor] CGColor];
-    return standInLayer;
-}
-
--(void)setupPreviewLayer
+-(void)addPreviewLayerToMainWindow
 {
     /*
      Add the camera preview display to the main window.
      */
-    self.cameraView.layer = self.faceDetectionController.videoPreviewLayer;
-    self.cameraView.wantsLayer = YES;
+    [self.cameraView setLayer:[self.faceDetectionController videoPreviewLayer]];
+    [self.cameraView setWantsLayer:YES];
 }
 
--(void)removePreviewLayer
+-(void)removePreviewLayerFromMainWindow
 {
-    self.cameraView.layer = [self blackedOutLayer];
+    static CALayer *mainStandInLayer = nil;
+    if ( ! mainStandInLayer) {
+        mainStandInLayer = [CALayer layer];
+        mainStandInLayer.backgroundColor = [[NSColor blackColor] CGColor];
+        mainStandInLayer.opaque = YES;
+    }
+    [self.cameraView setLayer:mainStandInLayer];
+}
+
+-(void)addPreviewlayerToHUDWindow
+{
+    [self.HUDWindow.contentView setLayer:[self.faceDetectionController videoPreviewLayer]];
+    [self.HUDWindow.contentView setWantsLayer:YES];
+}
+
+-(void)removePreviewLayerFromHUDWindow
+{
+    static CALayer *HUDStandInLayer = nil;
+    if ( ! HUDStandInLayer) {
+        HUDStandInLayer = [CALayer layer];
+    }
+    [self.HUDWindow.contentView setLayer:HUDStandInLayer];
 }
 
 #pragma mark - Window Control
@@ -83,36 +97,9 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
 -(void)showHUDWindow
 {
     if ([self.window isVisible]) {
-        self.fullCameraViewFrame = [self.window convertRectToScreen:self.cameraView.frame];
-        NSRect startingHUDWindowFrame = self.fullCameraViewFrame;
-        
-        
-        [self removePreviewLayer];
-        [self.HUDWindow.contentView setLayer:self.faceDetectionController.videoPreviewLayer];
-        [self.HUDWindow.contentView setWantsLayer:YES];
-        
-        [self.HUDWindow setFrame:startingHUDWindowFrame display:NO];
-        [self.HUDWindow setContentSize:startingHUDWindowFrame.size];
-        [self.HUDWindow makeKeyAndOrderFront:self];
-        
-        [self.window orderOut:self];
-        
-        NSRect newHUDWindowFrame;
-        if (self.returnHUDWindowToLastSize) {
-            newHUDWindowFrame = NSRectFromString([[NSUserDefaults standardUserDefaults] objectForKey:HUDWindowLastPosition]);
-        } else {
-            NSSize finalSize = HUD_WINDOW_FINAL_SIZE;
-            newHUDWindowFrame.origin = self.window.frame.origin;
-            newHUDWindowFrame.size = finalSize;
-            // Center the HUD window under the old
-            newHUDWindowFrame.origin.x += startingHUDWindowFrame.size.width / 2 - finalSize.width / 2;
-            newHUDWindowFrame.origin.y += startingHUDWindowFrame.size.height / 2 - finalSize.height / 2;
-        }
-        
-        [self animateHUDWindowZoomToContentFrame:newHUDWindowFrame completionHandler:^{
-            [self saveHUDPreferences];
-        }];
+        [self animateSwitchingToHUD];
     } else {
+        [self addPreviewlayerToHUDWindow];
         [self.HUDWindow makeKeyAndOrderFront:self];
     }
 }
@@ -120,55 +107,92 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
 -(void)showMainWindow
 {
     if ([self.HUDWindow isVisible]) {
-        self.movingWindows = YES;
-        self.returnHUDWindowToLastSize = YES;
-        
-        NSRect currentHUDWindowFrame = self.HUDWindow.frame;
-        NSRect newHUDWindowFrame = self.fullCameraViewFrame; // fullCameraViewFrame for size; origin is off for now
-        NSRect newMainWindowFrame = self.window.frame; // for size, origin is off until...
-        
-        // Get the final origin of the main window by centering with HUDWindow
-        newMainWindowFrame.origin.x = currentHUDWindowFrame.origin.x + (currentHUDWindowFrame.size.width / 2 - newHUDWindowFrame.size.width / 2);
-        newMainWindowFrame.origin.y = currentHUDWindowFrame.origin.y + (currentHUDWindowFrame.size.height / 2 - newHUDWindowFrame.size.height / 2);
-        
-        
-        // If the final window will be off the screen, fix it
-        NSRect screenBounds = self.HUDWindow.screen.visibleFrame;
-        NSInteger maxX = screenBounds.size.width - newMainWindowFrame.size.width - 10;
-        NSInteger maxY = screenBounds.size.width - newMainWindowFrame.size.width - 10;
-        if (newMainWindowFrame.origin.x > maxX)
-            newMainWindowFrame.origin.x = maxX;
-        if (newMainWindowFrame.origin.y > maxY)
-            newMainWindowFrame.origin.y = maxY;
-        
-        if (newMainWindowFrame.origin.x < screenBounds.origin.x)
-            newMainWindowFrame.origin.x = screenBounds.origin.x + 10;
-        if (newMainWindowFrame.origin.y < screenBounds.origin.y)
-            newMainWindowFrame.origin.y = screenBounds.origin.y + 10;
-        
-        
-        // Last but not least, the new HUD window origin has to match main window origin
-        newHUDWindowFrame.origin = newMainWindowFrame.origin;
-        
-        [self.window setFrame:newMainWindowFrame display:NO animate:NO];
-        [self animateHUDWindowZoomToContentFrame:newHUDWindowFrame completionHandler:^{
-            [self.window orderBack:self];
-            
-            [self.HUDWindow.contentView setLayer:[self blackedOutLayer]];
-            [self.HUDWindow orderOut:self];
-            
-            [self setupPreviewLayer];
-            
-            [self saveHUDPreferences];
-            self.movingWindows = NO;
-            
-            [self.window.contentView setNeedsDisplay:YES];
-        }];
+        [self animateSwitchingToMainWindow];
     } else {
         [NSApp activateIgnoringOtherApps:YES];
-        [self setupPreviewLayer];
+        [self addPreviewLayerToMainWindow];
         [self.window makeKeyAndOrderFront:self];
     }
+}
+
+-(void)animateSwitchingToHUD
+{
+    self.fullCameraViewFrame = [self.window convertRectToScreen:self.cameraView.frame];
+    NSRect startingHUDWindowFrame = self.fullCameraViewFrame;
+    
+    
+    [self removePreviewLayerFromMainWindow];
+    [self addPreviewlayerToHUDWindow];
+    
+    [self.HUDWindow setFrame:startingHUDWindowFrame display:NO];
+    [self.HUDWindow setContentSize:startingHUDWindowFrame.size];
+    [self.HUDWindow makeKeyAndOrderFront:self];
+    
+    [self.window orderOut:self];
+    
+    NSRect newHUDWindowFrame;
+    if (self.returnHUDWindowToLastSize) {
+        newHUDWindowFrame = NSRectFromString([[NSUserDefaults standardUserDefaults] objectForKey:HUDWindowLastPosition]);
+    } else {
+        NSSize finalSize = HUD_WINDOW_FINAL_SIZE;
+        newHUDWindowFrame.origin = self.window.frame.origin;
+        newHUDWindowFrame.size = finalSize;
+        // Center the HUD window under the old
+        newHUDWindowFrame.origin.x += startingHUDWindowFrame.size.width / 2 - finalSize.width / 2;
+        newHUDWindowFrame.origin.y += startingHUDWindowFrame.size.height / 2 - finalSize.height / 2;
+    }
+    
+    [self animateHUDWindowZoomToContentFrame:newHUDWindowFrame completionHandler:^{
+        [self saveHUDPreferences];
+    }];
+}
+
+-(void)animateSwitchingToMainWindow
+{
+    self.movingWindows = YES;
+    self.returnHUDWindowToLastSize = YES;
+    
+    NSRect currentHUDWindowFrame = self.HUDWindow.frame;
+    NSRect newHUDWindowFrame = self.fullCameraViewFrame; // fullCameraViewFrame for size; origin is off for now
+    NSRect newMainWindowFrame = self.window.frame; // for size, origin is off until...
+    
+    // Get the final origin of the main window by centering with HUDWindow
+    newMainWindowFrame.origin.x = currentHUDWindowFrame.origin.x + (currentHUDWindowFrame.size.width / 2 - newHUDWindowFrame.size.width / 2);
+    newMainWindowFrame.origin.y = currentHUDWindowFrame.origin.y + (currentHUDWindowFrame.size.height / 2 - newHUDWindowFrame.size.height / 2);
+    
+    
+    // If the final window will be off the screen, fix it
+    NSRect screenBounds = self.HUDWindow.screen.visibleFrame;
+    NSInteger maxX = screenBounds.size.width - newMainWindowFrame.size.width - 10;
+    NSInteger maxY = screenBounds.size.width - newMainWindowFrame.size.width - 10;
+    if (newMainWindowFrame.origin.x > maxX)
+        newMainWindowFrame.origin.x = maxX;
+    if (newMainWindowFrame.origin.y > maxY)
+        newMainWindowFrame.origin.y = maxY;
+    
+    if (newMainWindowFrame.origin.x < screenBounds.origin.x)
+        newMainWindowFrame.origin.x = screenBounds.origin.x + 10;
+    if (newMainWindowFrame.origin.y < screenBounds.origin.y)
+        newMainWindowFrame.origin.y = screenBounds.origin.y + 10;
+    
+    
+    // Last but not least, the new HUD window origin has to match main window origin
+    newHUDWindowFrame.origin = newMainWindowFrame.origin;
+    
+    [self.window setFrame:newMainWindowFrame display:NO animate:NO];
+    [self animateHUDWindowZoomToContentFrame:newHUDWindowFrame completionHandler:^{
+        [self.window orderBack:self];
+        
+        [self.HUDWindow orderOut:self];
+        
+        [self removePreviewLayerFromHUDWindow];
+        [self addPreviewLayerToMainWindow];
+        
+        [self saveHUDPreferences];
+        self.movingWindows = NO;
+        
+        [self.window.contentView setNeedsDisplay:YES];
+    }];
 }
 
 #pragma mark - Preferences Stuff
@@ -190,16 +214,12 @@ NSString * const HUDWindowVisible = @"HUDWindowVisible";
 -(void)restoreHUD
 {
     /*
-     Only to be called durinig app startup; do the absolute minimum to get the HUD on screen, and have switchToMainWindow work when called
+     Only to be called durinig app startup; get the HUD on screen, and setup self.fullCameraViewFrame so that switchToMainWindow will work when called
      */
     self.fullCameraViewFrame = self.cameraView.frame;
-
-    [self.HUDWindow.contentView setLayer:[self.faceDetectionController videoPreviewLayer]];
-    [self.HUDWindow.contentView setWantsLayer:YES];
     [self.HUDWindow setFrame:NSRectFromString([[NSUserDefaults standardUserDefaults] objectForKey:HUDWindowLastPosition])
                      display:NO];
-    
-    [self.HUDWindow makeKeyAndOrderFront:self];
+    [self showHUDWindow];
 }
 
 #pragma mark - Window Delegate Stuff
