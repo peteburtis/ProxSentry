@@ -1,6 +1,9 @@
 # ProxSentry
 ## A webcam based pseudo-proximity-sensor experiment for OS X
 
+**Important Note** The _Automatically Adjust Brightness_ setting in the _Displays_ control panel can override ProxSentry's _Dim Screen When User Leaves_ setting.  For best results, turn it off.
+
+
 ### [<img src="https://raw.github.com/wiki/peteburtis/ProxSentry/images/LargeIcon.png" align="right" /> Get The Latest Version from Top of the Downloads Page](https://github.com/peteburtis/ProxSentry/downloads)
 
 ### Purpose
