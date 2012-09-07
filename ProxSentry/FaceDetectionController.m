@@ -268,7 +268,9 @@ NSString * const LowerWebcamResolution = @"LowerWebcamResolution";
 {
     if (activationDisabledForSystemSleep != _activationDisabledForSystemSleep) {
         _activationDisabledForSystemSleep = activationDisabledForSystemSleep;
-        [self shutdownVideoCapture];
+        if (_activationDisabledForSystemSleep) {
+            [self shutdownVideoCapture];
+        }
     }
 }
 
