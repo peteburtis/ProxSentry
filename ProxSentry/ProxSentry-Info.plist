@@ -21,18 +21,18 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
+	<key>LSHUDmumSystemVersion</key>
+	<string>10.7</string>
+	<key>LSUIElement</key>
+	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2012 Peter Burtis. Licensed under the GPL.</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>LSUIElement</key>
-	<true/>
-	<key>LSHUDmumSystemVersion</key>
-	<string>10.7</string>
 </dict>
 </plist>
