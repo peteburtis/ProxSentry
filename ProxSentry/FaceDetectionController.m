@@ -176,12 +176,18 @@ NSString * const LowerWebcamResolution = @"LowerWebcamResolution";
 
 -(void)buildVideoPreviewLayer
 {
+    static CGColorRef blackColor = NULL;
+    if (blackColor == NULL) {
+        blackColor = CGColorCreateGenericGray(0, 1);
+    }
+    
+    
     [self buildCaptureSession];
     if (_previewSuperlayer != nil) return;
     
     // Create and configure the video preview layer
     AVCaptureVideoPreviewLayer *newPreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:_session];
-    newPreviewLayer.backgroundColor = [[NSColor blackColor] CGColor];
+    newPreviewLayer.backgroundColor = blackColor;
     newPreviewLayer.opaque = YES;
     
     // Mirror the video

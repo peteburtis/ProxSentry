@@ -46,10 +46,14 @@ NSString * const KeepVideoPreviewOnHotStandby = @"KeepVideoPreviewOnHotStandby";
 
 -(void)removePreviewLayerFromMainWindow
 {
+    static CGColorRef blackColor = NULL;
     static CALayer *mainStandInLayer = nil;
     if ( ! mainStandInLayer) {
+        if (blackColor == NULL) {
+            blackColor = CGColorCreateGenericGray(0, 1);
+        }
         mainStandInLayer = [CALayer layer];
-        mainStandInLayer.backgroundColor = [[NSColor blackColor] CGColor];
+        mainStandInLayer.backgroundColor = blackColor;
         mainStandInLayer.opaque = YES;
     }
     [self.cameraView setLayer:mainStandInLayer];

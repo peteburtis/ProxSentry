@@ -80,8 +80,13 @@
 
 -(void)drawInContext:(CGContextRef)ctx
 {
+    static CGColorRef blueColor = NULL;
+    if (blueColor == NULL) {
+        blueColor = CGColorCreateGenericRGB(0, 0, 1, 1);
+    }
+    
     // Figure out the multiplier to translate a point from image space to layer space
-    CGContextSetStrokeColorWithColor(ctx, [[NSColor blueColor] CGColor]);
+    CGContextSetStrokeColorWithColor(ctx, blueColor);
     CGContextSetLineWidth(ctx, 4);
     
     for (CIFeature *feature in _faces) {
